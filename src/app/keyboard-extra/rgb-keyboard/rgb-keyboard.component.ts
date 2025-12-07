@@ -34,10 +34,14 @@ export class RgbKeyboardComponent implements OnDestroy {
       private _rgbMode: string = "static";
       default_button_state: string = "btn-outline-secondary";
       selectedKeyIndex: { row: number, col: number } | null = null;
+      customCycleName: string = 'My Custom Cycle';
+      
+      generatedConfigJson: string = ''; 
 
       private colorCycleInterval: any;
       private currentColorIndex: number = 0;
       private currentStepStartTime: number = 0;
+      private currentStartRgb: { r: number, g: number, b: number } = { r: 0, g: 0, b: 0 }; 
 
       customColors: CustomColor[] = [
           { id: 1, hexCode: '#FF0000', duration: 1000 },
@@ -131,7 +135,7 @@ export class RgbKeyboardComponent implements OnDestroy {
     ]
 ];
     
-    constructor(private cdr: ChangeDetectorRef) {} // Inject ChangeDetectorRef
+    constructor(private cdr: ChangeDetectorRef) {}
     
     get rgbEnabled(): boolean { return this._rgbEnabled; }
     set rgbEnabled(value: boolean) {
@@ -227,6 +231,25 @@ export class RgbKeyboardComponent implements OnDestroy {
     public ngOnDestroy(): void {
         this.stopColorCycle();
     }
+    
+    public generateCustomRgbConfigJson(): void {
+        const config = {
+            name: this.customCycleName,
+            mode: 'custom_cycle',
+            steps_count: this.customColors.length,
+            steps: this.customColors.map(color => ({
+                hex_code: color.hexCode.toUpperCase().startsWith('#') ? color.hexCode.toUpperCase() : `#${color.hexCode.toUpperCase()}`,
+                duration_ms: Math.max(1, color.duration)
+            }))
+        };
+        
+        const jsonString = JSON.stringify(config, null, 2);
+        
+        console.log("Generated Custom RGB Config:");
+        console.log(jsonString);
+        
+        this.generatedConfigJson = jsonString;
+    }
 
     public startColorCycle(): void {
         this.stopColorCycle();
@@ -236,16 +259,19 @@ export class RgbKeyboardComponent implements OnDestroy {
         }
         
         this.currentColorIndex = 0;
+        
+        // Initialize the first displayed color and the transition start color
+        const initialRgb = this._updateRgbFromHex(this.customColors[0].hexCode);
+        if (initialRgb) {
+            this.currentStartRgb = initialRgb;
+            this._rgbRed = initialRgb.r;
+            this._rgbGreen = initialRgb.g;
+            this._rgbBlue = initialRgb.b;
+        }
+
+        // Start the timer for the first transition
         this.currentStepStartTime = Date.now();
         
-        const startRgb = this._updateRgbFromHex(this.customColors[0].hexCode);
-        if (startRgb) {
-            this._rgbRed = startRgb.r;
-            this._rgbGreen = startRgb.g;
-            this._rgbBlue = startRgb.b;
-        }
-        
-        // Start the interval which will now force change detection
         this.colorCycleInterval = setInterval(() => this.updateColorTransition(), ANIMATION_INTERVAL);
     }
 
@@ -257,7 +283,8 @@ export class RgbKeyboardComponent implements OnDestroy {
         
         const now = Date.now();
         
-        const previousIndex = this.currentColorIndex;
+        // The transition is from the color in this.currentColorIndex TO the color in targetIndex
+        const previousIndex = this.currentColorIndex; 
         const targetIndex = (this.currentColorIndex + 1) % this.customColors.length;
 
         const currentConfig = this.customColors[previousIndex];
@@ -267,10 +294,12 @@ export class RgbKeyboardComponent implements OnDestroy {
         const elapsed = now - this.currentStepStartTime;
         const progress = Math.min(1, elapsed / duration);
 
-        const startR = this._rgbRed;
-        const startG = this._rgbGreen;
-        const startB = this._rgbBlue;
+        // START color is read from the explicitly saved state for this transition step
+        const startR = this.currentStartRgb.r;
+        const startG = this.currentStartRgb.g;
+        const startB = this.currentStartRgb.b;
 
+        // TARGET color is the color we are fading to (from the next config entry)
         const targetRgb = this._updateRgbFromHex(nextConfig.hexCode);
         
         if (!targetRgb) {
@@ -279,19 +308,24 @@ export class RgbKeyboardComponent implements OnDestroy {
         }
 
         if (progress < 1) {
+            // Interpolate smoothly
             this._rgbRed = startR + (targetRgb.r - startR) * progress;
             this._rgbGreen = startG + (targetRgb.g - startG) * progress;
             this._rgbBlue = startB + (targetRgb.b - startB) * progress;
         } else {
+            // Transition complete: Set final color exactly
             this._rgbRed = targetRgb.r;
             this._rgbGreen = targetRgb.g;
             this._rgbBlue = targetRgb.b;
             
+            // Set the START color for the next transition step to be this exact final color
+            this.currentStartRgb = { r: targetRgb.r, g: targetRgb.g, b: targetRgb.b };
+            
+            // Move to the next index and reset the timer
             this.currentColorIndex = targetIndex;
             this.currentStepStartTime = now;
         }
         
-        // <-- THE FIX: Manually trigger change detection -->
         this.cdr.detectChanges(); 
     }
 
