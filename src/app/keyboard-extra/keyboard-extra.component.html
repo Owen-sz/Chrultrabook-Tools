@@ -26,7 +26,8 @@
           [class]="rgb_class" 
           routerLink="rgb"
           (click)="rgb()" 
-          data-bs-toggle="button">
+          data-bs-toggle="button"
+          [disabled] = 'rgb_enabled'>
           RGB Keyboards
         </button>
       </div>
