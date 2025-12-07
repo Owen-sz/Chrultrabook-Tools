@@ -1,0 +1,149 @@
+ <!-- Keyboard Display -->
+    <div class="row mb-3">
+      <div class="col">
+        <div class="p-3 bg-secondary rounded-3 overflow-auto">
+          <div
+            class="keyboard-display"
+            [class.rgb-enabled]="rgbEnabled"
+            [style.--rgb-color]="rgbColor"
+            [style.--rgb-opacity]="rgbOpacity"
+          >
+            @for (row of keyboardLayout; track rowIndex; let rowIndex = $index)
+            {
+            <div class="d-flex gap-1 mb-1 justify-content-center fw-bolder">
+              @for (key of row; track colIndex; let colIndex = $index) {
+              <button
+                class="btn btn-sm key-btn key-text"
+                [ngClass]="{
+                  'btn-outline-secondary':
+                    key.state === 'btn-outline-secondary',
+                }"
+                [style.flex]="key.width"
+              >
+                <span>{{ key.label }}</span>
+              </button>
+              }
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RGB Controls -->
+    <div class="row mb-3">
+      <div class="col">
+        <h5 class="fs-3 mb-2">
+          <img
+            src="../../assets/activity_light/activity.svg"
+            class="align-text-middle px-2"
+            alt="RGB"
+          />
+          RGB Lighting Control
+        </h5>
+        <div class="p-3 bg-secondary rounded-3">
+          <div class="row g-2 mb-2">
+            <div class="col-auto">
+              <div class="form-check">
+                <input
+                  type="checkbox"
+                  [(ngModel)]="rgbEnabled"
+                  class="form-check-input"
+                  id="rgbEnable"
+                />
+                <label class="form-check-label fs-5" for="rgbEnable"
+                  >Enable RGB</label
+                >
+              </div>
+            </div>
+            <div class="col">
+              <select
+                [(ngModel)]="rgbMode"
+                class="form-select form-select-sm"
+                [disabled]="!rgbEnabled"
+              >
+                <option value="static">Static</option>
+                <option value="breathing">Breathing</option>
+                <option value="wave">Wave</option>
+                <option value="rainbow">Rainbow</option>
+                <option value="reactive">Reactive</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row g-2 mb-2">
+            <div class="col-12">
+              <label class="form-label mb-1 fs-4"
+                >Brightness: {{ brightness }}%</label
+              >
+              <input
+                type="range"
+                [(ngModel)]="brightness"
+                min="0"
+                max="100"
+                class="form-range"
+                [disabled]="!rgbEnabled"
+              />
+            </div>
+          </div>
+
+          <div class="row g-2 mb-2">
+            <div class="col-12 col-md-4">
+              <label class="form-label mb-1 fs-4">Red: {{ rgbRed }}</label>
+              <input
+                type="range"
+                [(ngModel)]="rgbRed"
+                min="0"
+                max="255"
+                class="form-range"
+                [disabled]="!rgbEnabled || rgbMode === 'rainbow'"
+              />
+            </div>
+            <div class="col-12 col-md-4">
+              <label class="form-label mb-1 fs-4">Green: {{ rgbGreen }}</label>
+              <input
+                type="range"
+                [(ngModel)]="rgbGreen"
+                min="0"
+                max="255"
+                class="form-range"
+                [disabled]="!rgbEnabled || rgbMode === 'rainbow'"
+              />
+            </div>
+            <div class="col-12 col-md-4">
+              <label class="form-label mb-1 fs-4">Blue: {{ rgbBlue }}</label>
+              <input
+                type="range"
+                [(ngModel)]="rgbBlue"
+                min="0"
+                max="255"
+                class="form-range"
+                [disabled]="!rgbEnabled || rgbMode === 'rainbow'"
+              />
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-12">
+              <label for="hexInput" class="form-label fs-4">Hex Code:</label>
+              <input
+                type="text"
+                id="hexInput"
+                [(ngModel)]="hexCodeInput"
+                class="form-control"
+                placeholder="Enter Hex Code"
+                [disabled]="!rgbEnabled || rgbMode === 'rainbow'"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div
+                class="color-preview rounded-3"
+                [style.background-color]="rgbColor"
+                [style.opacity]="rgbEnabled ? rgbOpacity : 0.3"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>

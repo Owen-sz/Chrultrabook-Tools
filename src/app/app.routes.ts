@@ -1,12 +1,17 @@
 import { Routes } from "@angular/router";
+
 import { CustomFanComponent } from "./custom-fan/custom-fan.component";
 import { FanCurvesComponent } from "./custom-fan/fan-curves/fan-curves.component";
 import { FanProfilesComponent } from "./custom-fan/fan-profiles/fan-profiles.component";
 import { FanDataComponent } from "./custom-fan/fan-data/fan-data.component";
+
 import { HomeComponent } from "./home/home.component";
-import { KeyboardExtraComponent } from "./keyboard-extra/keyboard-extra.component";
 import { DiagnosticsComponent } from "./diagnostics/diagnostics.component";
 import { SettingsComponent } from "./settings/settings.component";
+
+import { KeyboardExtraComponent } from "./keyboard-extra/keyboard-extra.component";
+import { RgbKeyboardComponent } from "./keyboard-extra/rgb-keyboard/rgb-keyboard.component";
+import { KeyboardRemapComponent } from "./keyboard-extra/keyboard-remap/keyboard-remap.component";
 
 export const routes: Routes = [
   { path: "", component: HomeComponent },
@@ -32,7 +37,24 @@ export const routes: Routes = [
       },
     ],
   },
-  { path: "Keyboard_extra", component: KeyboardExtraComponent },
+  { 
+    path: "Keyboard_extra",
+    component: KeyboardExtraComponent,
+    children: [
+      {
+        path: "",
+        component: KeyboardRemapComponent,
+      },
+      {
+        path: "remap",
+        component: KeyboardRemapComponent,
+      },
+      {
+        path: "rgb",
+        component: RgbKeyboardComponent,
+      }
+    ], 
+  },
   { path: "Diagnostics", component: DiagnosticsComponent },
   { path: "Settings", component: SettingsComponent },
 ];
