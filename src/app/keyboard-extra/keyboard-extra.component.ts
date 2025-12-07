@@ -17,7 +17,7 @@ export class KeyboardExtraComponent {
   current_title: string = "Keyboard Remapping";
   current_img: string = "../../assets/keyboard/keyboard.svg";
 
-  rgb_enabled: boolean = true;
+  rgb_enabled: boolean = false;
 
   ngOnInit()
   {
@@ -27,9 +27,10 @@ export class KeyboardExtraComponent {
       reply: true,
     }).then((event) => {
         let output: any = event;
-        let split = output.split(" ");
+        let split = output.split(" ")[0].toLowerCase();
 
-        if(split[0] == 'Ec')
+        console.log(split);
+        if(split != 'ec')
         {
             this.rgb_enabled = false;
         }
