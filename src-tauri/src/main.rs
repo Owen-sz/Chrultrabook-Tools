@@ -20,7 +20,8 @@ use tauri::tray::TrayIconBuilder;
 use tauri::{AppHandle, Emitter, EventTarget, Manager};
 use tauri_plugin_autostart::{MacosLauncher, ManagerExt};
 use tauri_plugin_clipboard_manager::ClipboardExt;
-
+use tauri_plugin_dialog::DialogExt;
+use std::fs;
 
 #[cfg(target_os = "linux")]
 use std::process::Command;
@@ -287,55 +288,61 @@ fn reset(handle: tauri::AppHandle) {
     handle.restart();
 }
 #[tauri::command]
-fn get_remap_json(hard_reset: bool) -> String
-{
+fn get_remap_json(hard_reset: bool) -> String {
     keyboard_remap::read_config(hard_reset)
 }
 
-
 #[tauri::command]
-fn set_remap(handle: tauri::AppHandle, params: String) -> bool
-{
+fn set_remap(handle: tauri::AppHandle, params: String) -> bool {
     let created_backup = local_storage("get", "keyboard_backup", " ");
-    if created_backup.len() == 0
-    {
+    if created_backup.len() == 0 {
         let output = keyboard_remap::create_backup();
-        match output
-        {
+        match output {
             Err(e) => {
-                println!("Error: {}",e);
+                println!("Error: {}", e);
                 return false;
             }
             _ => {}
         }
     }
 
-
-    let output = keyboard_remap::generate_config_from_json(handle, &params);
-    match output
-    {
-        Ok(_) => return true,
+    let buffer: Vec<u8> = match keyboard_remap::generate_config_from_json(&params) {
+        Ok(b) => b,
         Err(e) => {
             println!("Error {}", e);
             return false;
-        },
+        }
     };
 
-    execute::execute_relay(
-        handle,
-        "keyboard",
-        Vec::new(),
-        false,
-    );
+    let execution_handle = handle.clone();
+    let buffer_clone = buffer.clone();
 
-    return false;
-}
-#[tauri::command]
-fn reset_remap() -> bool
-{
+    handle
+        .dialog()
+        .file()
+        .set_file_name("croskbsettings.bin")
+        .add_filter("Binary File", &["bin"])
+        .save_file(move |file_path| {
+            if let Some(file) = file_path {
+                match fs::write(file.to_string(), &buffer_clone) {
+                    Ok(_) => {
+                        execute::execute_relay(execution_handle, "keyboard", Vec::new(), false);
+                    }
+                    Err(e) => {
+                        println!("Error writing file: {}", e);
+                    }
+                }
+            } else {
+                println!("File save cancelled by user.");
+            }
+        });
+
     return true;
 }
-
+#[tauri::command]
+fn reset_remap() -> bool {
+    return true;
+}
 
 fn elevate() -> Result<(), Box<dyn Error>> {
     #[cfg(target_os = "linux")]

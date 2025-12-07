@@ -13,4 +13,3 @@ pub fn select_path(app: tauri::AppHandle, file_name: String, content: String) {
             }
         });
 }
-

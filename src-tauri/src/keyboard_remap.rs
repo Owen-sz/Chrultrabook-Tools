@@ -1,12 +1,11 @@
 use std::fs::{self, File};
+use std::io;
 use std::io::Write;
 use std::mem;
 use std::path::Path;
-use std::io;
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use serde_json;
-use tauri_plugin_dialog::DialogExt;
 
 // config file location
 const CONFIG_PATH: &str = "C:\\Windows\\System32\\drivers\\croskbsettings.bin";
@@ -62,8 +61,8 @@ const KEY_E0: u16 = 2;
 const CFG_MAGIC: u32 = u32::from_le_bytes(*b"BKrC");
 
 const FUNCTION_KEYS: [u16; 16] = [
-    0x3B, 0x3C, 0x3D, 0x3E, 0x3F, 0x40, 0x41, 0x42, 0x43, 0x44, 0x57, 0x58,
-    0x64, 0x65, 0x66, 0x67, // F13-F16
+    0x3B, 0x3C, 0x3D, 0x3E, 0x3F, 0x40, 0x41, 0x42, 0x43, 0x44, 0x57, 0x58, 0x64, 0x65, 0x66,
+    0x67, // F13-F16
 ];
 
 // enums on c and rust are not the same, hence this structure
@@ -158,10 +157,16 @@ struct RemapCfgKeyJson {
 impl RemapCfgKeyJson {
     fn new(make_code: u16, flags: u16) -> Self {
         let mut flags_decoded = Vec::new();
-        if flags & 0x0001 != 0 { flags_decoded.push("KEY_BREAK".to_string()); }
-        if flags & 0x0002 != 0 { flags_decoded.push("KEY_E0".to_string()); }
-        if flags & 0x0004 != 0 { flags_decoded.push("KEY_E1".to_string()); }
-        
+        if flags & 0x0001 != 0 {
+            flags_decoded.push("KEY_BREAK".to_string());
+        }
+        if flags & 0x0002 != 0 {
+            flags_decoded.push("KEY_E0".to_string());
+        }
+        if flags & 0x0004 != 0 {
+            flags_decoded.push("KEY_E1".to_string());
+        }
+
         Self {
             make_code,
             make_code_hex: format!("0x{:02X}", make_code),
@@ -169,7 +174,7 @@ impl RemapCfgKeyJson {
             flags_decoded,
         }
     }
-    
+
     fn is_empty(&self) -> bool {
         self.make_code == 0 && self.flags == 0
     }
@@ -177,7 +182,7 @@ impl RemapCfgKeyJson {
 
 #[derive(Debug, Serialize, Deserialize)]
 struct ConfigEntryJson {
-    index: u32,    
+    index: u32,
     left_ctrl: String,
     left_alt: String,
     search: String,
@@ -186,12 +191,12 @@ struct ConfigEntryJson {
     right_ctrl: String,
     right_alt: String,
     right_shift: String,
-    
+
     original_key: RemapCfgKeyJson,
     remap_vivaldi_to_fn: bool,
-    
+
     remapped_key: Option<RemapCfgKeyJson>,
-    
+
     additional_keys: Vec<RemapCfgKeyJson>,
 }
 
@@ -213,40 +218,45 @@ struct ConfigFileJson {
     configs: Vec<ConfigEntryJson>,
 }
 
-
-
 // config generators
 
-pub fn generate_config_from_json(app: tauri::AppHandle, json_data: &str) -> Result<(), Box<dyn std::error::Error>> {
-    
+pub fn generate_config_from_json(json_data: &str) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
     let config_json: ConfigFileJson = serde_json::from_str(&json_data)?;
-    
-    println!("Loaded {} configuration entries from JSON", config_json.configs.len());
-    
+
+    println!(
+        "Loaded {} configuration entries from JSON",
+        config_json.configs.len()
+    );
+
     // validate
     if config_json.configs.len() > 255 {
         return Err("Too many configurations (max 255)".into());
     }
-    
+
     let num_configs = config_json.configs.len();
     let header_size = mem::size_of::<RemapCfgsHeader>();
     let cfg_size = mem::size_of::<RemapCfg>();
     let total_size = header_size + cfg_size * num_configs;
-    
+
     // println!("Generating binary config:");
     // println!("  Header size: {} bytes", header_size);
     // println!("  Config entry size: {} bytes", cfg_size);
     // println!("  Number of configs: {}", num_configs);
     // println!("  Total size: {} bytes\n", total_size);
-    
+
     let mut buffer = vec![0u8; total_size];
-    
+
     // Write header
     unsafe {
         let header = buffer.as_mut_ptr() as *mut RemapCfgsHeader;
         (*header).magic = CFG_MAGIC;
         (*header).remappings = num_configs as u32;
-        (*header).flip_search_and_assistant_on_pixelbook = if config_json.flip_search_and_assistant_on_pixelbook { 1 } else { 0 };
+        (*header).flip_search_and_assistant_on_pixelbook =
+            if config_json.flip_search_and_assistant_on_pixelbook {
+                1
+            } else {
+                0
+            };
         (*header).has_assistant_key = match config_json.has_assistant_key.as_str() {
             "Enable" => REMAP_ENABLE,
             "Disable" => REMAP_DISABLE,
@@ -258,17 +268,17 @@ pub fn generate_config_from_json(app: tauri::AppHandle, json_data: &str) -> Resu
             _ => REMAP_AUTO_DETECT,
         };
     }
-    
+
     // get mutable slice for configs
     let cfg_array = unsafe {
         let ptr = buffer.as_mut_ptr().add(header_size);
         std::slice::from_raw_parts_mut(ptr as *mut RemapCfg, num_configs)
     };
-    
+
     // parse and write each config entry
     for (i, json_config) in config_json.configs.iter().enumerate() {
         let mut cfg = RemapCfg::new();
-        
+
         // parse modifier states
         cfg.left_ctrl = parse_key_state(&json_config.left_ctrl);
         cfg.left_alt = parse_key_state(&json_config.left_alt);
@@ -278,49 +288,36 @@ pub fn generate_config_from_json(app: tauri::AppHandle, json_data: &str) -> Resu
         cfg.right_ctrl = parse_key_state(&json_config.right_ctrl);
         cfg.right_alt = parse_key_state(&json_config.right_alt);
         cfg.right_shift = parse_key_state(&json_config.right_shift);
-        
+
         // parse original key
         cfg.original_key = RemapCfgKey::with_values(
             json_config.original_key.make_code,
             json_config.original_key.flags,
         );
-        
+
         // parse remap flag
-        cfg.remap_vivaldi_to_fn_keys = if json_config.remap_vivaldi_to_fn { 1 } else { 0 };
-        
+        cfg.remap_vivaldi_to_fn_keys = if json_config.remap_vivaldi_to_fn {
+            1
+        } else {
+            0
+        };
+
         // parse remapped key
         if let Some(ref remapped) = json_config.remapped_key {
-            cfg.remapped_key = RemapCfgKey::with_values(
-                remapped.make_code,
-                remapped.flags,
-            );
+            cfg.remapped_key = RemapCfgKey::with_values(remapped.make_code, remapped.flags);
         }
-        
+
         // parse additional keys
         for (j, add_key) in json_config.additional_keys.iter().enumerate() {
             if j < 8 {
-                cfg.additional_keys[j] = RemapCfgKey::with_values(
-                    add_key.make_code,
-                    add_key.flags,
-                );
+                cfg.additional_keys[j] = RemapCfgKey::with_values(add_key.make_code, add_key.flags);
             }
         }
-        
+
         cfg_array[i] = cfg;
     }
 
-    app.dialog()
-    .file()
-    .set_file_name("croskbsettings.bin")
-    .add_filter("Binary File", &["bin"]) 
-    .save_file(move |file_path| {
-        if let Some(ref _out) = file_path {
-            let file = file_path.unwrap();
-            fs::write(file.to_string(), &buffer).expect("unable to write")        
-        } 
-    });
-        
-    Ok(())
+    Ok(buffer)
 }
 
 fn parse_key_state(state_str: &str) -> i32 {
@@ -332,15 +329,11 @@ fn parse_key_state(state_str: &str) -> i32 {
 }
 
 pub fn read_config(hard_reset: bool) -> String {
-
     // read file
     let path: &str;
-    if !hard_reset
-    {
+    if !hard_reset {
         path = CONFIG_PATH;
-    }
-    else
-    {
+    } else {
         path = BACKUP_PATH;
     }
     let data = match fs::read(path) {
@@ -353,10 +346,13 @@ pub fn read_config(hard_reset: bool) -> String {
 
     // validate minimum file size
     if data.len() < 17 {
-        println!("File too small (need at least 17 bytes for header, got {})", data.len());
+        println!(
+            "File too small (need at least 17 bytes for header, got {})",
+            data.len()
+        );
         return String::new();
     }
-    
+
     // Read magic (0x0000-0x0003)
     let magic_bytes = &data[0..4];
     let magic_u32 = bytes_to_u32(magic_bytes).unwrap();
@@ -365,8 +361,10 @@ pub fn read_config(hard_reset: bool) -> String {
     let valid = magic_u32 == CFG_MAGIC;
 
     if !valid {
-        println!("Invalid magic number: expected 0x{:08X}, got 0x{:08X} ('{}')", 
-                 CFG_MAGIC, magic_u32, magic_str);
+        println!(
+            "Invalid magic number: expected 0x{:08X}, got 0x{:08X} ('{}')",
+            CFG_MAGIC, magic_u32, magic_str
+        );
         return String::new();
     }
 
@@ -405,8 +403,11 @@ pub fn read_config(hard_reset: bool) -> String {
 
     let expected_size = 17 + (remappings as usize * 73);
     if data.len() < expected_size {
-        println!("Warning: File size mismatch. Expected {} bytes, got {} bytes", 
-                 expected_size, data.len());
+        println!(
+            "Warning: File size mismatch. Expected {} bytes, got {} bytes",
+            expected_size,
+            data.len()
+        );
     }
 
     let available_configs = (data.len() - 17) / 73;
@@ -416,14 +417,14 @@ pub fn read_config(hard_reset: bool) -> String {
 
     for i in 0..configs_to_read {
         let offset = 17 + (i as usize * 73);
-        
+
         if offset + 73 > data.len() {
             println!("Config {}: Incomplete (not enough data)", i);
             break;
         }
 
         let config_data = &data[offset..offset + 73];
-        
+
         // Read modifier states
         let left_ctrl = bytes_to_i32(&config_data[0x00..0x04]).unwrap();
         let left_alt = bytes_to_i32(&config_data[0x04..0x08]).unwrap();
@@ -451,7 +452,7 @@ pub fn read_config(hard_reset: bool) -> String {
             let key_offset = 0x29 + (j * 4);
             let make_code = bytes_to_u16(&config_data[key_offset..key_offset + 2]).unwrap();
             let flags = bytes_to_u16(&config_data[key_offset + 2..key_offset + 4]).unwrap();
-            
+
             if make_code != 0 || flags != 0 {
                 additional_keys_vec.push(RemapCfgKeyJson::new(make_code, flags));
             }
@@ -459,7 +460,7 @@ pub fn read_config(hard_reset: bool) -> String {
 
         // Create JSON entry
         let remapped_key_obj = RemapCfgKeyJson::new(remap_make_code, remap_flags);
-        
+
         let config_entry = ConfigEntryJson {
             index: i,
             left_ctrl: format_key_state(left_ctrl).to_string(),
@@ -472,31 +473,51 @@ pub fn read_config(hard_reset: bool) -> String {
             right_shift: format_key_state(right_shift).to_string(),
             original_key: RemapCfgKeyJson::new(orig_make_code, orig_flags),
             remap_vivaldi_to_fn: remap_vivaldi,
-            remapped_key: if remapped_key_obj.is_empty() { None } else { Some(remapped_key_obj) },
+            remapped_key: if remapped_key_obj.is_empty() {
+                None
+            } else {
+                Some(remapped_key_obj)
+            },
             additional_keys: additional_keys_vec.clone(),
         };
 
         // Print config entry
         // println!("Config Entry {}:", i);
         // println!("  File offset: 0x{:04X}", offset);
-        
+
         // Print modifiers if not NoDetect (0)
         let mut modifiers = Vec::new();
-        if left_ctrl != 0 { modifiers.push(format!("LeftCtrl={}", format_key_state(left_ctrl))); }
-        if left_alt != 0 { modifiers.push(format!("LeftAlt={}", format_key_state(left_alt))); }
-        if search != 0 { modifiers.push(format!("Search={}", format_key_state(search))); }
-        if assistant != 0 { modifiers.push(format!("Assistant={}", format_key_state(assistant))); }
-        if left_shift != 0 { modifiers.push(format!("LeftShift={}", format_key_state(left_shift))); }
-        if right_ctrl != 0 { modifiers.push(format!("RightCtrl={}", format_key_state(right_ctrl))); }
-        if right_alt != 0 { modifiers.push(format!("RightAlt={}", format_key_state(right_alt))); }
-        if right_shift != 0 { modifiers.push(format!("RightShift={}", format_key_state(right_shift))); }
-        
+        if left_ctrl != 0 {
+            modifiers.push(format!("LeftCtrl={}", format_key_state(left_ctrl)));
+        }
+        if left_alt != 0 {
+            modifiers.push(format!("LeftAlt={}", format_key_state(left_alt)));
+        }
+        if search != 0 {
+            modifiers.push(format!("Search={}", format_key_state(search)));
+        }
+        if assistant != 0 {
+            modifiers.push(format!("Assistant={}", format_key_state(assistant)));
+        }
+        if left_shift != 0 {
+            modifiers.push(format!("LeftShift={}", format_key_state(left_shift)));
+        }
+        if right_ctrl != 0 {
+            modifiers.push(format!("RightCtrl={}", format_key_state(right_ctrl)));
+        }
+        if right_alt != 0 {
+            modifiers.push(format!("RightAlt={}", format_key_state(right_alt)));
+        }
+        if right_shift != 0 {
+            modifiers.push(format!("RightShift={}", format_key_state(right_shift)));
+        }
+
         if !modifiers.is_empty() {
             println!("  Modifiers: {}", modifiers.join(", "));
         }
 
         // println!("  Original key: 0x{:02X} (flags: {})", orig_make_code, format_flags(orig_flags));
-        
+
         // if remap_vivaldi {
         //     println!("  Remap to: Vivaldi -> Function key");
         // } else if remap_make_code != 0 || remap_flags != 0 {
@@ -506,17 +527,20 @@ pub fn read_config(hard_reset: bool) -> String {
         // if !additional_keys_vec.is_empty() {
         //     println!("  Additional keys:");
         //     for (idx, key) in additional_keys_vec.iter().enumerate() {
-        //         println!("    [{}] 0x{:02X} (flags: {})", idx, key.make_code, 
+        //         println!("    [{}] 0x{:02X} (flags: {})", idx, key.make_code,
         //                  if key.flags_decoded.is_empty() { "NONE".to_string() } else { key.flags_decoded.join("|") });
         //     }
         // }
 
         // println!();
-        
+
         configs.push(config_entry);
     }
 
-    println!("Successfully read {} configuration entries", configs_to_read);
+    println!(
+        "Successfully read {} configuration entries",
+        configs_to_read
+    );
 
     // Create and write JSON output
     let json_output = ConfigFileJson {
@@ -543,7 +567,6 @@ pub fn read_config(hard_reset: bool) -> String {
     }
 }
 
-
 pub fn create_backup() -> io::Result<()> {
     let backup_dir = Path::new("C:\\kbremapbackups");
 
@@ -556,8 +579,7 @@ pub fn create_backup() -> io::Result<()> {
     Ok(())
 }
 
-
-//helper 
+//helper
 fn bytes_to_u32(bytes: &[u8]) -> Option<u32> {
     if bytes.len() < 4 {
         return None;
@@ -590,11 +612,17 @@ fn format_key_state(state: i32) -> &'static str {
 
 fn format_flags(flags: u16) -> String {
     let mut flag_strs = Vec::new();
-    
-    if flags & 0x0001 != 0 { flag_strs.push("BREAK"); }
-    if flags & 0x0002 != 0 { flag_strs.push("E0"); }
-    if flags & 0x0004 != 0 { flag_strs.push("E1"); }
-    
+
+    if flags & 0x0001 != 0 {
+        flag_strs.push("BREAK");
+    }
+    if flags & 0x0002 != 0 {
+        flag_strs.push("E0");
+    }
+    if flags & 0x0004 != 0 {
+        flag_strs.push("E1");
+    }
+
     if flag_strs.is_empty() {
         "NONE".to_string()
     } else {
