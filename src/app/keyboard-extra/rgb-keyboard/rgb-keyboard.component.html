@@ -199,7 +199,7 @@
         <div class="col-4 d-flex justify-content-center">
           <button
             class="btn btn-outline-success w-100"
-            (click)="generateCustomRgbConfigJson()"
+            (click)="generateCustomRgbConfigJson(false)"
             [disabled]="!rgbEnabled"
           >
             Save Profile
@@ -209,7 +209,7 @@
         <div class="col-4 d-flex justify-content-center">
           <button
             class="btn btn-success w-100"
-            (click)="generateCustomRgbConfigJson()"
+            (click)="generateCustomRgbConfigJson(true)"
             [disabled]="!rgbEnabled"
           >
             Save and Apply Profile

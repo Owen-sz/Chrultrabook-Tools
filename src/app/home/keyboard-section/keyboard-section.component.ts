@@ -1,5 +1,21 @@
 import { Component, OnInit } from "@angular/core";
 import { invoke } from "@tauri-apps/api/core";
+import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
+
+interface SavedStep {
+  id: number;
+  hex_code: string;
+  duration_ms: number;
+}
+
+interface SavedProfile {
+  id: number;
+  name: string;
+  mode: string;
+  steps_count: number;
+  steps: SavedStep[];
+}
+
 
 @Component({
   selector: "app-keyboard-section",
@@ -14,6 +30,7 @@ export class KeyboardSectionComponent implements OnInit {
   disabled_class: string = "";
   extension: string = "";
   zoom: number = 1;
+  customProfiles: SavedProfile[] = [];
 
   ngOnInit() {
     invoke("execute", {
@@ -42,6 +59,14 @@ export class KeyboardSectionComponent implements OnInit {
         this.zoom = number;
         console.log(this.zoom);
       }
+    });
+
+
+    const appWebview = getCurrentWebviewWindow();
+    appWebview.listen<string>("rgb", (event) => {
+      let payload = event.payload;
+      this.customProfiles = JSON.parse(payload);
+      console.log(this.customProfiles);
     });
   }
 

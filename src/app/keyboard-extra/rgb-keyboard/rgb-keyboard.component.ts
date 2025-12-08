@@ -365,7 +365,7 @@ export class RgbKeyboardComponent implements OnDestroy {
     this.stopColorCycle();
   }
 
-  public generateCustomRgbConfigJson(): void {
+  public generateCustomRgbConfigJson(send_to_main: boolean): void {
     const STORAGE_KEY = "rgb_profile";
     let configList: any[] = [];
 
@@ -424,6 +424,13 @@ export class RgbKeyboardComponent implements OnDestroy {
         const finalJsonString = JSON.stringify(configList, null, 2);
         console.log(finalJsonString);
 
+        if(send_to_main)
+        {
+          invoke("transfer_rgb", {
+            rgb: newConfig
+          })
+        }
+
         return invoke("local_storage", {
           function: "save",
           option: STORAGE_KEY,
@@ -443,6 +450,7 @@ export class RgbKeyboardComponent implements OnDestroy {
         );
       });
   }
+
 
   public delete_profile(profileId: number | string): void {
     if (typeof profileId !== "number") {
