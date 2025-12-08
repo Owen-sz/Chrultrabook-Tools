@@ -37,7 +37,7 @@ export const routes: Routes = [
       },
     ],
   },
-  { 
+  {
     path: "Keyboard_extra",
     component: KeyboardExtraComponent,
     children: [
@@ -52,8 +52,8 @@ export const routes: Routes = [
       {
         path: "rgb",
         component: RgbKeyboardComponent,
-      }
-    ], 
+      },
+    ],
   },
   { path: "Diagnostics", component: DiagnosticsComponent },
   { path: "Settings", component: SettingsComponent },

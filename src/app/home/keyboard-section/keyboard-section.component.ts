@@ -5,7 +5,7 @@ import { invoke } from "@tauri-apps/api/core";
   selector: "app-keyboard-section",
   imports: [],
   templateUrl: "./keyboard-section.component.html",
-  styleUrl: "./keyboard-section.component.scss"
+  styleUrl: "./keyboard-section.component.scss",
 })
 export class KeyboardSectionComponent implements OnInit {
   backlight_percentage: string = "N/A";
@@ -40,11 +40,10 @@ export class KeyboardSectionComponent implements OnInit {
       if (typeof percentage === "string") {
         const number = Number(percentage) / 100;
         this.zoom = number;
-        console.log(this.zoom)
+        console.log(this.zoom);
       }
     });
   }
-
 
   update_percentage(event: MouseEvent) {
     this.backlight_percentage = (event.target as HTMLInputElement).value;
@@ -61,7 +60,7 @@ export class KeyboardSectionComponent implements OnInit {
       name: "Keyboard_extra",
       width: 660.0,
       height: 410.0,
-      zoom: this.zoom
+      zoom: this.zoom,
     });
   }
 }

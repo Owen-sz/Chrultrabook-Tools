@@ -4,34 +4,36 @@
       <div class="col-6">
         <h4 class="fs-3 mb-0">
           <img
-            [src] = "current_img"
+            [src]="current_img"
             class="align-text-middle px-2"
             alt="Keyboard"
           />
-          {{current_title}}
+          {{ current_title }}
         </h4>
       </div>
-      
+
       <div class="col-6 text-end">
-        <button 
-          class="btn btn-outline-secondary fs-4 border-0" 
-          [class]="remap" 
+        <button
+          class="btn btn-outline-secondary fs-4 border-0"
+          [class]="remap"
           routerLink="remap"
-          (click)="keyboard_remap()" 
-          data-bs-toggle="button">
+          (click)="keyboard_remap()"
+          data-bs-toggle="button"
+        >
           Keyboard Remapping
         </button>
-        <button 
-          class="btn btn-outline-secondary fs-4 border-0 ms-2" 
-          [class]="rgb_class" 
+        <button
+          class="btn btn-outline-secondary fs-4 border-0 ms-2"
+          [class]="rgb_class"
           routerLink="rgb"
-          (click)="rgb()" 
+          (click)="rgb()"
           data-bs-toggle="button"
-          [disabled] = 'rgb_enabled'>
+          [disabled]="rgb_enabled"
+        >
           RGB Keyboards
         </button>
       </div>
-    </div> 
+    </div>
   </div>
 
   <div class="container-fluid p-0">

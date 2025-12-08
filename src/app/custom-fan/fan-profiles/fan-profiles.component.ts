@@ -6,7 +6,7 @@ import { profile } from "../../services/profiles";
   selector: "app-fan-profiles",
   imports: [],
   templateUrl: "./fan-profiles.component.html",
-  styleUrl: "./fan-profiles.component.scss"
+  styleUrl: "./fan-profiles.component.scss",
 })
 export class FanProfilesComponent {
   edit: boolean = false;
@@ -27,13 +27,12 @@ export class FanProfilesComponent {
     if (event.code == "Enter") {
       this.addProfiles();
     }
-
   }
 
   addProfiles() {
-    const name = (
-      document.getElementById("text") as HTMLInputElement
-    ).value.trim().replace(/ /g, '');
+    const name = (document.getElementById("text") as HTMLInputElement).value
+      .trim()
+      .replace(/ /g, "");
     if (name !== "") {
       (document.getElementById("text") as HTMLInputElement).value = "";
       this.fan_service.addProfile(name);
@@ -53,7 +52,7 @@ export class FanProfilesComponent {
       this.profiles[i].disabled = true;
       const changed_name = (
         document.getElementById(
-          this.profiles[i].id.toString(),
+          this.profiles[i].id.toString()
         ) as HTMLInputElement
       ).value;
       if (changed_name !== "") {

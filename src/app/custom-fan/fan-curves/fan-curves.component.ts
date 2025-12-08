@@ -11,7 +11,7 @@ import { invoke } from "@tauri-apps/api/core";
   selector: "app-fan-curves",
   imports: [BaseChartDirective],
   templateUrl: "./fan-curves.component.html",
-  styleUrl: "./fan-curves.component.scss"
+  styleUrl: "./fan-curves.component.scss",
 })
 export class FanCurvesComponent implements OnInit {
   mode_value: string = " ";
@@ -29,7 +29,7 @@ export class FanCurvesComponent implements OnInit {
     }, 550);
 
     this.fan_service.getIndex.subscribe(
-      (index) => (this.selected_mode = index),
+      (index) => (this.selected_mode = index)
     );
   }
 
@@ -49,9 +49,9 @@ export class FanCurvesComponent implements OnInit {
   save() {
     this.fan_service.editFanCurves(
       this.fan_service.getProfileIndexByName(
-        (document.getElementById("selector") as HTMLInputElement).value,
+        (document.getElementById("selector") as HTMLInputElement).value
       ),
-      this.lineChartData.datasets[0].data,
+      this.lineChartData.datasets[0].data
     );
   }
   saveAndApply() {

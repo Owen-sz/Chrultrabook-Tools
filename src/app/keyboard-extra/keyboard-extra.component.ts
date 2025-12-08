@@ -2,7 +2,6 @@ import { Component } from "@angular/core";
 import { RouterLink, RouterOutlet } from "@angular/router";
 import { invoke } from "@tauri-apps/api/core";
 
-
 @Component({
   selector: "app-keyboard-extra",
   standalone: true,
@@ -19,23 +18,20 @@ export class KeyboardExtraComponent {
 
   rgb_enabled: boolean = false;
 
-  ngOnInit()
-  {
+  ngOnInit() {
     invoke("execute", {
       program: "ectool",
       arguments: ["rgbkbd", "getconfig"],
       reply: true,
     }).then((event) => {
-        let output: any = event;
-        let split = output.split(" ")[0].toLowerCase();
+      let output: any = event;
+      let split = output.split(" ")[0].toLowerCase();
 
-        console.log(split);
-        if(split != 'ec')
-        {
-            this.rgb_enabled = false;
-        }
-
-    })
+      console.log(split);
+      if (split != "ec") {
+        this.rgb_enabled = false;
+      }
+    });
   }
 
   removeActive() {

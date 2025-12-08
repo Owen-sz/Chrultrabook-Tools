@@ -8,7 +8,7 @@ import { invoke } from "@tauri-apps/api/core";
   imports: [],
   templateUrl: "./fan-section.component.html",
   styleUrl: "./fan-section.component.scss",
-  providers: [FanService]
+  providers: [FanService],
 })
 export class FanSectionComponent implements OnInit {
   selected_mode: string = "N/A";
@@ -36,7 +36,7 @@ export class FanSectionComponent implements OnInit {
 
   fanService: FanService = inject(FanService);
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
     invoke("execute", {
@@ -67,8 +67,7 @@ export class FanSectionComponent implements OnInit {
               this.auto_active = "active";
               this.selected_mode = "Auto";
               this.fan_auto();
-            }
-            else {
+            } else {
               let output = JSON.parse(event);
               if (output) {
                 const selected_data = this.fanService.getSelected();
@@ -81,7 +80,6 @@ export class FanSectionComponent implements OnInit {
                 this.selected_mode = "Auto";
                 this.fan_auto();
               }
-
             }
           }
         });
@@ -99,7 +97,6 @@ export class FanSectionComponent implements OnInit {
           this.zoom = number;
         }
       });
-
     });
 
     //starts the interval of reading the cpu temps
@@ -119,9 +116,6 @@ export class FanSectionComponent implements OnInit {
       console.log(this.fan_array);
       this.fan_custom();
     });
-
-
-
   }
 
   async get_cpu_temp() {
@@ -197,7 +191,12 @@ export class FanSectionComponent implements OnInit {
   }
 
   open_fan_custom_window() {
-    invoke("open_window", { name: "Custom_Fans", width: 980.0, height: 540.0, zoom: this.zoom });
+    invoke("open_window", {
+      name: "Custom_Fans",
+      width: 980.0,
+      height: 540.0,
+      zoom: this.zoom,
+    });
   }
 
   ngOnDestroy() {

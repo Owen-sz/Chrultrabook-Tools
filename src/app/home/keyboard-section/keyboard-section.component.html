@@ -1,8 +1,15 @@
-<div class="keyboard_text mt-4 container-fluid p-0 align-items-center" [class]="disabled_class">
+<div
+  class="keyboard_text mt-4 container-fluid p-0 align-items-center"
+  [class]="disabled_class"
+>
   <div class="row p-0 m-0">
     <div class="col-7 p-0">
       <h4 class="fs-4 fw-heavy">
-        <img src="../../../assets/keyboard/keyboard.svg" class="align-text-middle px-2" alt="keyboard" />Keyboard
+        <img
+          src="../../../assets/keyboard/keyboard.svg"
+          class="align-text-middle px-2"
+          alt="keyboard"
+        />Keyboard
       </h4>
     </div>
     <div class="col-5">
@@ -11,14 +18,24 @@
       </h4>
     </div>
   </div>
-
-
 </div>
 <div class="grid keyboard_controls px-2 pt-1">
-  <input (click)="update_percentage($event)" type="range" class="form-range pt-1 px-1" min="0" max="100" step="10"
-    id="keyboard_backlight" [value]="percentage" [disabled]="backlight_exists" />
+  <input
+    (click)="update_percentage($event)"
+    type="range"
+    class="form-range pt-1 px-1"
+    min="0"
+    max="100"
+    step="10"
+    id="keyboard_backlight"
+    [value]="percentage"
+    [disabled]="backlight_exists"
+  />
   <div class="ps-1">
-    <button class="btn btn-outline-secondary border-0 fs-4 w-100 p-0" (click)="keyboard_more()">
+    <button
+      class="btn btn-outline-secondary border-0 fs-4 w-100 p-0"
+      (click)="keyboard_more()"
+    >
       <img class="p-0" src="../../../assets/keyboard/more.svg" alt="extra" />
     </button>
   </div>

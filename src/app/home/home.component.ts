@@ -4,12 +4,9 @@ import { KeyboardSectionComponent } from "./keyboard-section/keyboard-section.co
 import { ActivityLightSectionComponent } from "./activity-light-section/activity-light-section.component";
 import { ExtraSectionComponent } from "./extra-section/extra-section.component";
 import { invoke } from "@tauri-apps/api/core";
-import { ElementRef, ViewChild } from '@angular/core';
-import { getCurrentWindow } from '@tauri-apps/api/window';
-import { LogicalSize } from '@tauri-apps/api/dpi';
-
-
-
+import { ElementRef, ViewChild } from "@angular/core";
+import { getCurrentWindow } from "@tauri-apps/api/window";
+import { LogicalSize } from "@tauri-apps/api/dpi";
 
 @Component({
   selector: "app-home",
@@ -20,15 +17,13 @@ import { LogicalSize } from '@tauri-apps/api/dpi';
     ExtraSectionComponent,
   ],
   templateUrl: "./home.component.html",
-  styleUrl: "./home.component.scss"
+  styleUrl: "./home.component.scss",
 })
 export class HomeComponent {
-
   class: string = " ";
   open: number = 0;
 
-  @ViewChild('container') containerRef!: ElementRef;
-
+  @ViewChild("container") containerRef!: ElementRef;
 
   private resizeWindowToContent() {
     let el = this.containerRef.nativeElement as HTMLElement;
@@ -51,13 +46,13 @@ export class HomeComponent {
       }).then((event: any) => {
         let output = event.toLowerCase().trim();
         if (output == "ec says hello!") {
-          this.class = "displaynone"
+          this.class = "displaynone";
         }
       });
-    })
+    });
     setTimeout(() => {
       this.resizeWindowToContent();
-    }, 1500)
+    }, 1500);
 
     invoke("os").then((os) => {
       if (typeof os === "string") {
@@ -73,12 +68,8 @@ export class HomeComponent {
             }
           });
         }
-        this.resizeWindowToContent()
+        this.resizeWindowToContent();
       }
-    })
-
+    });
   }
-
-
-
 }

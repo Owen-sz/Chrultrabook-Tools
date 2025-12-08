@@ -1,20 +1,20 @@
 import { Component, ViewChild, ElementRef } from "@angular/core";
 import { RouterLink, RouterOutlet } from "@angular/router";
-import { getCurrentWindow } from '@tauri-apps/api/window';
-import { LogicalSize } from '@tauri-apps/api/dpi';
+import { getCurrentWindow } from "@tauri-apps/api/window";
+import { LogicalSize } from "@tauri-apps/api/dpi";
 
 @Component({
   selector: "app-custom-fan",
   imports: [RouterLink, RouterOutlet],
   templateUrl: "./custom-fan.component.html",
-  styleUrl: "./custom-fan.component.scss"
+  styleUrl: "./custom-fan.component.scss",
 })
 export class CustomFanComponent {
   curves: string = "active";
   profile: string = "";
   data: string = "";
 
-  @ViewChild('container') containerRef!: ElementRef;
+  @ViewChild("container") containerRef!: ElementRef;
 
   refresh() {
     window.location.reload();
@@ -52,7 +52,4 @@ export class CustomFanComponent {
     this.removeActive();
     this.data = "active";
   }
-
 }
-
-

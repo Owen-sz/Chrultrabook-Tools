@@ -8,7 +8,7 @@ import { invoke } from "@tauri-apps/api/core";
   selector: "app-fan-data",
   imports: [BaseChartDirective],
   templateUrl: "./fan-data.component.html",
-  styleUrl: "./fan-data.component.scss"
+  styleUrl: "./fan-data.component.scss",
 })
 export class FanDataComponent {
   fan_service: FanService = inject(FanService);
@@ -28,7 +28,7 @@ export class FanDataComponent {
 
   collect() {
     const time = Number(
-      (document.getElementById("time") as HTMLInputElement).value,
+      (document.getElementById("time") as HTMLInputElement).value
     );
     if (this.button_label == "Collect Data") {
       this.button_label = "Stop Collect";

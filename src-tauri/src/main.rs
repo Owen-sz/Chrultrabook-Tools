@@ -14,6 +14,7 @@ mod temps;
 
 //external crates
 use std::error::Error;
+use std::fs;
 use tauri::image::Image;
 use tauri::menu::{IconMenuItemBuilder, MenuBuilder, MenuItemBuilder};
 use tauri::tray::TrayIconBuilder;
@@ -21,7 +22,6 @@ use tauri::{AppHandle, Emitter, EventTarget, Manager};
 use tauri_plugin_autostart::{MacosLauncher, ManagerExt};
 use tauri_plugin_clipboard_manager::ClipboardExt;
 use tauri_plugin_dialog::DialogExt;
-use std::fs;
 
 #[cfg(target_os = "linux")]
 use std::process::Command;
@@ -239,7 +239,7 @@ fn autostart(app: AppHandle, value: bool) {
 }
 
 #[tauri::command]
-async fn get_json() -> String {
+async fn get_fan_json() -> String {
     let output = local_storage("get", "profiles", "");
     let default_array = String::from("[{\"id\":0,\"name\":\"Default\",\"array\":[0,10,25,40,60,80,95,100,100,100,100,100,100],\"selected\":true,\"disabled\":true,\"class\":\"transparent\",\"img_class\":\"btn-outline-info\",\"img\":\"\\uF4CB\"},{\"id\":1,\"name\":\"Aggressive\",\"array\":[0,10,40,50,60,90,100,100,100,100,100,100,100],\"selected\":false,\"disabled\":true,\"class\":\"transparent\",\"img_class\":\"btn-outline-info\",\"img\":\"\\uF4CB\"},{\"id\":2,\"name\":\"Quiet\",\"array\":[0,15,20,30,40,55,90,100,100,100,100,100,100],\"selected\":false,\"disabled\":true,\"class\":\"transparent\",\"img_class\":\"btn-outline-info\",\"img\":\"\\uF4CB\"}]");
     if !output.contains("[") {
@@ -247,6 +247,12 @@ async fn get_json() -> String {
     } else {
         output
     }
+}
+
+#[tauri::command]
+async fn get_rgb_json() -> String {
+    let output = local_storage("get", "rgbprofiles", "");
+    return output;
 }
 
 #[tauri::command]
@@ -267,6 +273,12 @@ fn transfer_fan_curves(app: AppHandle, curves: String) {
 }
 
 #[tauri::command]
+fn transfer_rgb(app: AppHandle, rgb: String) {
+    app.emit_to(EventTarget::webview_window("main"), "rgb", &rgb)
+        .expect("failure to transmit data");
+}
+
+#[tauri::command]
 fn setzoom(handle: tauri::AppHandle, scale: f64) {
     let windows = handle.webview_windows();
     for (_, window) in windows.iter() {
@@ -283,6 +295,7 @@ fn reset(handle: tauri::AppHandle) {
     let _ = local_storage("remove", "zoom", "");
     let _ = local_storage("remove", "profiles", "");
     let _ = local_storage("remove", "app_boot", "");
+    let _ = local_storage("remove", "rgb", "");
     autostart(handle.clone(), false);
 
     handle.restart();
@@ -481,9 +494,11 @@ fn main() -> Result<(), Box<dyn Error>> {
             os,
             change_activity_light,
             autostart,
-            get_json,
+            get_fan_json,
+            get_rgb_json,
             set_custom_fan,
             transfer_fan_curves,
+            transfer_rgb,
             setzoom,
             reset,
             get_remap_json,

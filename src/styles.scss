@@ -9,9 +9,9 @@ $dark: #262525;
 $line-height-sm: 0;
 
 $h3-font-size: 1.1rem;
-$h4-font-size: .9rem;
-$h5-font-size: .7rem;
-$h6-font-size: .6rem;
+$h4-font-size: 0.9rem;
+$h5-font-size: 0.7rem;
+$h6-font-size: 0.6rem;
 $border-color: #262525;
 
 $enable-cssgrid: true;
@@ -23,7 +23,7 @@ $enable-cssgrid: true;
 
 $position-values: (
   0: 0,
-  10px: .8rem,
+  10px: 0.8rem,
   50: 50%,
   100: 100%,
 );
@@ -119,7 +119,6 @@ body {
   --bs-btn-hover-bg: rgb(255, 255, 255, 0.2);
 }
 
-
 .btn {
   --bs-btn-bg: #262525;
 }
@@ -127,4 +126,3 @@ body {
 .table-dark {
   --bs-table-bg: #262525;
 }
-

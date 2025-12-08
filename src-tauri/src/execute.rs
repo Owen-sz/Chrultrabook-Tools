@@ -27,21 +27,36 @@ const GETSYSINFO: &str = "wmic";
 #[cfg(windows)]
 const KEYBOARD: &str = "C:\\Program Files\\crosec\\croskbreload";
 
-fn execute(app: &tauri::AppHandle, program: &str, arguments: Vec<String>, reply: bool) -> String {
+pub async fn execute(
+    app: &tauri::AppHandle,
+    program: &str,
+    arguments: Vec<String>,
+    reply: bool,
+) -> Result<String, String> {
     let shell = app.shell();
-    let output = tauri::async_runtime::block_on(async move {
-        shell.command(program).args(arguments).output().await
-    });
+
+    let output = shell.command(program).args(arguments).output().await;
+
     if reply {
-        if let Ok(out) = output {
-            if out.status.success() {
-                return String::from_utf8(out.stdout).unwrap_or(String::from("execute_failure"));
+        match output {
+            Ok(out) => {
+                if out.status.success() {
+                    return Ok(String::from_utf8(out.stdout)
+                        .unwrap_or_else(|_| "execute_failure: invalid utf8".to_string()));
+                } else {
+                    return Err(format!(
+                        "{}",
+                        String::from_utf8(out.stderr).unwrap_or_else(|_| "N/A".to_string())
+                    ));
+                }
             }
-        } else {
-            return format!("Exit with message: {}", output.unwrap_err());
+            Err(e) => {
+                return Err(format!("Shell command error: {}", e));
+            }
         }
     }
-    String::new()
+
+    Ok(String::new())
 }
 
 pub fn execute_relay(
@@ -57,5 +72,8 @@ pub fn execute_relay(
         "keyboard" => KEYBOARD,
         _ => "echo",
     };
-    execute(&handle, program, arguments, reply).to_string()
+    let output =
+        tauri::async_runtime::block_on(async { execute(&handle, program, arguments, reply).await });
+
+    output.unwrap_or_else(|e| e)
 }
