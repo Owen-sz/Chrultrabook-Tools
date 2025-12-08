@@ -36,7 +36,9 @@ export class RgbKeyboardComponent implements OnDestroy {
       selectedKeyIndex: { row: number, col: number } | null = null;
       customCycleName: string = 'My Custom Cycle';
       
-      generatedConfigJson: string = ''; 
+      generatedConfigJson: string = '';
+      
+      static_mode: boolean = false;
 
       private colorCycleInterval: any;
       private currentColorIndex: number = 0;
@@ -151,13 +153,42 @@ export class RgbKeyboardComponent implements OnDestroy {
     set rgbMode(value: string) {
         this._rgbMode = value;
         this.stopColorCycle();
+        this._rgbEnabled = true;
+        this.static_mode = false;
 
         if (this._rgbMode === 'custom' && this.rgbEnabled) {
             this.startColorCycle();
         }
-        if (this._rgbMode === 'static') {
-            this.updateHexFromRgb();
+        if (this._rgbMode === 'off') {
+            this._rgbEnabled = false;
+            invoke("execute", {
+                program: "ectool",
+                arguments: ["rgbkbd", "demo", "0"],
+                reply: false,
+                });
         }
+
+        if(this._rgbMode == 'static')
+        {
+            this.static_mode = true;
+        }
+        
+        if(this._rgbMode == 'flow'){
+             invoke("execute", {
+                program: "ectool",
+                arguments: ["rgbkbd", "demo", "1"],
+                reply: false,
+                });
+        }
+
+        if(this._rgbMode == 'dot'){
+             invoke("execute", {
+                program: "ectool",
+                arguments: ["rgbkbd", "demo", "2"],
+                reply: false,
+                });
+        }
+        
     }
 
     get rgbColor(): string {
@@ -356,6 +387,15 @@ export class RgbKeyboardComponent implements OnDestroy {
                 this.startColorCycle();
             }
         }
+    }
+
+    public apply_static()
+    {
+        invoke("execute", {
+                program: "ectool",
+                arguments: ["rgbkbd", "clear", this.hexCodeInput],
+                reply: false,
+                });
     }
 
     get isCustomMode(): boolean {
