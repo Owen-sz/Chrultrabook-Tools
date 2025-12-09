@@ -47,7 +47,7 @@ export class SettingsComponent implements OnInit {
       if (typeof os == "string") {
         if (os != "linux") {
           this.linux = false;
-           this.cdr.detectChanges();
+          this.cdr.detectChanges();
         }
       }
     });
@@ -59,7 +59,7 @@ export class SettingsComponent implements OnInit {
     }).then((fan_boot) => {
       if (fan_boot == "true") {
         this.options[0].answer = true;
-         this.cdr.detectChanges();
+        this.cdr.detectChanges();
       }
     });
 
@@ -70,7 +70,7 @@ export class SettingsComponent implements OnInit {
     }).then((app_tray) => {
       if (app_tray == "true") {
         this.options[1].answer = true;
-         this.cdr.detectChanges();
+        this.cdr.detectChanges();
       }
     });
 
@@ -81,7 +81,7 @@ export class SettingsComponent implements OnInit {
     }).then((start_app_tray) => {
       if (start_app_tray == "true") {
         this.options[2].answer = true;
-         this.cdr.detectChanges();
+        this.cdr.detectChanges();
       }
     });
 
@@ -92,7 +92,7 @@ export class SettingsComponent implements OnInit {
     }).then((app_boot) => {
       if (app_boot == "true") {
         this.options[3].answer = true;
-         this.cdr.detectChanges();
+        this.cdr.detectChanges();
       }
     });
 
@@ -125,7 +125,7 @@ export class SettingsComponent implements OnInit {
           this.change_sensor();
         });
       }
-       this.cdr.detectChanges();
+      this.cdr.detectChanges();
     });
 
     invoke("local_storage", {
@@ -145,7 +145,7 @@ export class SettingsComponent implements OnInit {
           /^true$/i.test(states[i]);
       }
 
-       this.cdr.detectChanges();
+      this.cdr.detectChanges();
     });
     invoke("local_storage", {
       function: "get",
@@ -160,10 +160,8 @@ export class SettingsComponent implements OnInit {
             percentage;
         }
       }
-       this.cdr.detectChanges();
+      this.cdr.detectChanges();
     });
-
-
   }
 
   options = [

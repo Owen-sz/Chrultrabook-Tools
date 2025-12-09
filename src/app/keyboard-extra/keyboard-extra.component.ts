@@ -31,7 +31,7 @@ export class KeyboardExtraComponent {
 
       console.log(split);
       if (split == "ec") {
-        console.log('disabled');
+        console.log("disabled");
         this.rgb_enabled = true;
         this.cdr.detectChanges();
       }

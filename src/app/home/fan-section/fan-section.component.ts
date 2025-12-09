@@ -37,7 +37,6 @@ export class FanSectionComponent implements OnInit {
   fanService: FanService = inject(FanService);
   constructor(private cdr: ChangeDetectorRef) {}
 
-
   ngOnInit() {
     invoke("execute", {
       program: "ectool",
@@ -83,8 +82,7 @@ export class FanSectionComponent implements OnInit {
                 this.fan_auto();
               }
             }
-                this.cdr.detectChanges();
-
+            this.cdr.detectChanges();
           }
         });
 
@@ -120,8 +118,6 @@ export class FanSectionComponent implements OnInit {
       console.log(this.fan_array);
       this.fan_custom();
     });
-
-
   }
 
   async get_cpu_temp() {

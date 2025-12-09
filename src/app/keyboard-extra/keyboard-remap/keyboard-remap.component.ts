@@ -80,7 +80,6 @@ export class KeyboardRemapComponent {
         }
       }
     });
-
   }
 
   getRemappedKeys(type: boolean) {

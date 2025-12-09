@@ -419,27 +419,24 @@ export class RgbKeyboardComponent implements OnDestroy {
           const index = configList.findIndex((c) => c.id === newId);
           configList[index] = newConfig;
         } else {
-          configList.forEach((obj) =>
-          {
+          configList.forEach((obj) => {
             obj.active = false;
-          })
+          });
           configList.push(newConfig);
         }
 
-        if(send_to_main)
-        {
+        if (send_to_main) {
           newConfig.active = true;
         }
 
         const finalJsonString = JSON.stringify(configList, null, 2);
         console.log(finalJsonString);
 
-        if(send_to_main)
-        {
-          console.log('sent')
+        if (send_to_main) {
+          console.log("sent");
           invoke("transfer_rgb", {
-            rgb: finalJsonString
-          })
+            rgb: finalJsonString,
+          });
         }
 
         return invoke("local_storage", {
@@ -460,7 +457,6 @@ export class RgbKeyboardComponent implements OnDestroy {
         );
       });
   }
-
 
   public delete_profile(profileId: number | string): void {
     if (typeof profileId !== "number") {
