@@ -24,7 +24,6 @@ const GETSYSINFO: &str = "cat";
 const GETSYSINFO: &str = "wmic";
 
 // croskbreload
-#[cfg(windows)]
 const KEYBOARD: &str = "C:\\Program Files\\crosec\\croskbreload";
 
 pub async fn execute(

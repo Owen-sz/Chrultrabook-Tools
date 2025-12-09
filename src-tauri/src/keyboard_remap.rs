@@ -1,11 +1,9 @@
-use std::fs::{self, File};
+use std::fs::{self};
 use std::io;
-use std::io::Write;
 use std::mem;
 use std::path::Path;
 
 use serde::{Deserialize, Serialize};
-use serde_json;
 
 // config file location
 const CONFIG_PATH: &str = "C:\\Windows\\System32\\drivers\\croskbsettings.bin";
