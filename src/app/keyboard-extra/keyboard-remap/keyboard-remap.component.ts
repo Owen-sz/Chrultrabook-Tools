@@ -51,6 +51,7 @@ export class KeyboardRemapComponent {
   remapMode: boolean = false;
   current_remap: RemapConfig[] = [];
   fullConfig: ConfigFileJson | null = null;
+  linux: boolean = true;
 
   // Table view state
   showTableView: boolean = true;
@@ -70,7 +71,16 @@ export class KeyboardRemapComponent {
   ];
 
   ngOnInit() {
-    this.getRemappedKeys(false);
+    invoke("os").then((os) => {
+      if (typeof os == "string") {
+        if (os != "linux") {
+          this.linux = false;
+          this.cdr.detectChanges();
+          this.getRemappedKeys(false);
+        }
+      }
+    });
+
   }
 
   getRemappedKeys(type: boolean) {

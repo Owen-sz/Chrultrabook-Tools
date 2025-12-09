@@ -24,18 +24,21 @@
             <button
               class="btn btn-outline-danger btn-sm"
               (click)="resetToOriginalConfig()"
+              [disabled]="linux"
             >
               Hard Reset
             </button>
             <button
               class="btn btn-outline-warning btn-sm"
               (click)="resetToCurrentConfig()"
+              [disabled]="linux"
             >
               Soft Reset
             </button>
             <button
               class="btn btn-outline-success btn-sm"
               (click)="exportConfigJSON()"
+              [disabled]="linux"
             >
               Apply Remap
             </button>
@@ -123,6 +126,7 @@
                           class="btn btn-sm btn-outline-secondary"
                           (click)="cancelEditCell()"
                           type="button"
+                          [disabled]="linux"
                         >
                           ✕
                         </button>
@@ -175,6 +179,7 @@
                           class="btn btn-sm btn-outline-secondary"
                           (click)="cancelEditCell()"
                           type="button"
+                          [disabled]="linux"
                         >
                           ✕
                         </button>

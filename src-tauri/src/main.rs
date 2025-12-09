@@ -274,6 +274,7 @@ fn transfer_fan_curves(app: AppHandle, curves: String) {
 
 #[tauri::command]
 fn transfer_rgb(app: AppHandle, rgb: String) {
+    println!("{}", &rgb);
     app.emit_to(EventTarget::webview_window("main"), "rgb", &rgb)
         .expect("failure to transmit data");
 }

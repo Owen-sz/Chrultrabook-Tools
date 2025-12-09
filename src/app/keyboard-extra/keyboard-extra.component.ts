@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { ChangeDetectorRef, Component } from "@angular/core";
 import { RouterLink, RouterOutlet } from "@angular/router";
 import { invoke } from "@tauri-apps/api/core";
 
@@ -18,6 +18,8 @@ export class KeyboardExtraComponent {
 
   rgb_enabled: boolean = false;
 
+  constructor(private cdr: ChangeDetectorRef) {}
+
   ngOnInit() {
     invoke("execute", {
       program: "ectool",
@@ -28,8 +30,10 @@ export class KeyboardExtraComponent {
       let split = output.split(" ")[0].toLowerCase();
 
       console.log(split);
-      if (split != "ec") {
-        this.rgb_enabled = false;
+      if (split == "ec") {
+        console.log('disabled');
+        this.rgb_enabled = true;
+        this.cdr.detectChanges();
       }
     });
   }

@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { ChangeDetectorRef, Component } from "@angular/core";
 import { FanSectionComponent } from "./fan-section/fan-section.component";
 import { KeyboardSectionComponent } from "./keyboard-section/keyboard-section.component";
 import { ActivityLightSectionComponent } from "./activity-light-section/activity-light-section.component";
@@ -24,6 +24,7 @@ export class HomeComponent {
   open: number = 0;
 
   @ViewChild("container") containerRef!: ElementRef;
+  constructor(private cdr: ChangeDetectorRef) {}
 
   private resizeWindowToContent() {
     let el = this.containerRef.nativeElement as HTMLElement;
@@ -47,6 +48,7 @@ export class HomeComponent {
         let output = event.toLowerCase().trim();
         if (output == "ec says hello!") {
           this.class = "displaynone";
+          this.cdr.detectChanges();
         }
       });
     });

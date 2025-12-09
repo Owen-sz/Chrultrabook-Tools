@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, inject, OnInit } from "@angular/core";
 import { FanService } from "../../services/fan.service";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { invoke } from "@tauri-apps/api/core";
@@ -35,8 +35,8 @@ export class FanSectionComponent implements OnInit {
   zoom: number = 1;
 
   fanService: FanService = inject(FanService);
+  constructor(private cdr: ChangeDetectorRef) {}
 
-  constructor() {}
 
   ngOnInit() {
     invoke("execute", {
@@ -46,6 +46,7 @@ export class FanSectionComponent implements OnInit {
     }).then((event) => {
       let output: any = event;
       let split = output.split(" ");
+      console.log(split[0]);
       if (split[0] == "Fan") {
         //fans are auto disabled, this reverses the disabling
         this.fan_auto_class = "btn-outline-success";
@@ -55,6 +56,7 @@ export class FanSectionComponent implements OnInit {
         this.extension = "RPM";
         this.disabled_class = "";
         this.fan_exists = false;
+        this.cdr.detectChanges();
 
         //checks if user wants fan curves on boot and applies the respective classes
         invoke("local_storage", {
@@ -81,6 +83,8 @@ export class FanSectionComponent implements OnInit {
                 this.fan_auto();
               }
             }
+                this.cdr.detectChanges();
+
           }
         });
 
@@ -116,6 +120,8 @@ export class FanSectionComponent implements OnInit {
       console.log(this.fan_array);
       this.fan_custom();
     });
+
+
   }
 
   async get_cpu_temp() {

@@ -403,6 +403,7 @@ export class RgbKeyboardComponent implements OnDestroy {
 
         const newConfig = {
           id: newId,
+          active: false,
           name: this.customCycleName,
           mode: "custom_cycle",
           steps_count: this.customColors.length,
@@ -418,7 +419,16 @@ export class RgbKeyboardComponent implements OnDestroy {
           const index = configList.findIndex((c) => c.id === newId);
           configList[index] = newConfig;
         } else {
+          configList.forEach((obj) =>
+          {
+            obj.active = false;
+          })
           configList.push(newConfig);
+        }
+
+        if(send_to_main)
+        {
+          newConfig.active = true;
         }
 
         const finalJsonString = JSON.stringify(configList, null, 2);
@@ -426,8 +436,9 @@ export class RgbKeyboardComponent implements OnDestroy {
 
         if(send_to_main)
         {
+          console.log('sent')
           invoke("transfer_rgb", {
-            rgb: newConfig
+            rgb: finalJsonString
           })
         }
 
@@ -440,7 +451,6 @@ export class RgbKeyboardComponent implements OnDestroy {
           console.log(finalJsonString);
 
           this.generatedConfigJson = finalJsonString;
-          window.location.reload();
         });
       })
       .catch((error) => {
