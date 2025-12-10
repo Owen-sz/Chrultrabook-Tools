@@ -373,8 +373,7 @@ fn elevate() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 fn main() -> Result<(), Box<dyn Error>> {
-    let _ = elevate()?;
-
+    //let _ = elevate()?;
     tauri::Builder::default()
         .plugin(tauri_plugin_process::init())
         .setup(|app| {
