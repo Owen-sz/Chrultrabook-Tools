@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Chrultrabook Tools
+Comment=Chrultrabook Hardware Controller
+Exec=pkexec /usr/bin/chrultrabook-tools-root
+Icon=chrultrabook-tools
+Terminal=false
+Type=Application
+Categories=Utility;
+StartupWMClass=chrultrabook-tools

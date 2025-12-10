@@ -22,6 +22,20 @@
       "icons/icon.ico"
     ],
     "linux": {
+      "files": [
+        {
+          "source": "linux/chrultrabook-tools-root",
+          "target": "/usr/bin/chrultrabook-tools-root"
+        },
+        {
+          "source": "linux/com.chrultrabook.tools.policy",
+          "target": "/usr/share/polkit-1/actions/com.chrultrabook.tools.policy"
+        },
+        {
+          "source": "linux/chrultrabook-tools.desktop",
+          "target": "/usr/share/applications/chrultrabook-tools.desktop"
+        }
+      ],
       "deb": {
         "depends": [
           "chromium-ectool",
