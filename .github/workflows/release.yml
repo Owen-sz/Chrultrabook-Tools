@@ -7,7 +7,7 @@ permissions:
   contents: write
 
 env:
-  ubuntu-deps: "dpkg-dev fakeroot libwebkit2gtk-4.1-0 libwebkit2gtk-4.1-dev libjavascriptcoregtk-4.1-0 libjavascriptcoregtk-4.1-dev gir1.2-javascriptcoregtk-4.1 gir1.2-webkit2-4.1 build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev desktop-file-utils libudev-dev rpm"
+  ubuntu-deps: "dpkg-dev fakeroot libwebkit2gtk-4.1-0 libwebkit2gtk-4.1-dev libjavascriptcoregtk-4.1-0 libjavascriptcoregtk-4.1-dev gir1.2-javascriptcoregtk-4.1 gir1.2-webkit2-4.1 build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev desktop-file-utils libudev-dev rpm libgtk-3-dev"
 
 jobs:
   release:
