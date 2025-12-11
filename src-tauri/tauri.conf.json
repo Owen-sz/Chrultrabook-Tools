@@ -16,8 +16,8 @@
       "icons/icon.ico"
     ],
     "resources": {
-          "./linux/chrultrabook-tools-root": "usr/bin/chrultrabook-tools-root",
-          "./linux/com.chrultrabook.tools.policy": "usr/share/polkit-1/actions/com.chrultrabook.tools.policy",
+      "./linux/chrultrabook-tools-root": "usr/bin/chrultrabook-tools-root",
+      "./linux/com.chrultrabook.tools.policy": "usr/share/polkit-1/actions/com.chrultrabook.tools.policy"
     },
     "linux": {
       "deb": {
