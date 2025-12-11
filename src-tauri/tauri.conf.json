@@ -7,13 +7,7 @@
   },
   "bundle": {
     "active": true,
-    "targets": [
-      "deb",
-      "rpm",
-      "msi",
-      "nsis",
-      "dmg"
-    ],
+    "targets": ["deb", "rpm", "msi", "nsis", "dmg"],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
@@ -22,31 +16,21 @@
       "icons/icon.ico"
     ],
     "linux": {
-      "files": [
-        {
-          "source": "linux/chrultrabook-tools-root",
-          "target": "/usr/bin/chrultrabook-tools-root"
-        },
-        {
-          "source": "linux/com.chrultrabook.tools.policy",
-          "target": "/usr/share/polkit-1/actions/com.chrultrabook.tools.policy"
-        },
-        {
-          "source": "linux/chrultrabook-tools.desktop",
-          "target": "/usr/share/applications/chrultrabook-tools.desktop"
-        }
-      ],
       "deb": {
-        "depends": [
-          "chromium-ectool",
-          "chromium-cbmem"
-        ]
+        "depends": ["chromium-ectool", "chromium-cbmem"],
+        "files": {
+          "linux/chrultrabook-tools-root": "/usr/bin/chrultrabook-tools-root",
+          "linux/com.chrultrabook.tools.policy": "/usr/share/polkit-1/actions/com.chrultrabook.tools.policy",
+          "linux/chrultrabook-tools.desktop": "/usr/share/applications/chrultrabook-tools.desktop"
+        }
       },
       "rpm": {
-        "depends": [
-          "coreboot-utils-cbmem",
-          "chromium-ectool"
-        ]
+        "depends": ["coreboot-utils-cbmem", "chromium-ectool"],
+        "files": {
+          "linux/chrultrabook-tools-root": "/usr/bin/chrultrabook-tools-root",
+          "linux/com.chrultrabook.tools.policy": "/usr/share/polkit-1/actions/com.chrultrabook.tools.policy",
+          "linux/chrultrabook-tools.desktop": "/usr/share/applications/chrultrabook-tools.desktop"
+        }
       }
     }
   },
