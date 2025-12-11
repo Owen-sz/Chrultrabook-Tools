@@ -20,13 +20,17 @@
         "depends": ["chromium-ectool", "chromium-cbmem", "policykit-1"],
         "desktopTemplate": "./linux/chrultrabook-tools.desktop",
         "files": {
-          "./linux/chrultrabook-tools-root": "usr/bin/chrultrabook-tools-root",
-          "./linux/com.chrultrabook.tools.policy": "usr/share/polkit-1/actions/com.chrultrabook.tools.policy"
+          "/usr/bin/chrultrabook-tools-root": "./linux/chrultrabook-tools-root",
+          "/usr/share/polkit-1/actions/com.chrultrabook.tools.policy": "./linux/com.chrultrabook.tools.policy"
         }
       },
       "rpm": {
         "depends": ["coreboot-utils-cbmem", "chromium-ectool", "policykit-1"],
-        "desktopTemplate": "./linux/chrultrabook-tools.desktop"
+        "desktopTemplate": "./linux/chrultrabook-tools.desktop",
+        "files": {
+          "/usr/bin/chrultrabook-tools-root": "./linux/chrultrabook-tools-root",
+          "/usr/share/polkit-1/actions/com.chrultrabook.tools.policy": "./linux/com.chrultrabook.tools.policy"
+        }
       }
     }
   },
