@@ -1,2 +1,2 @@
 #!/bin/bash
-sudo exec /usr/bin/chrultrabook-tools "$@"
+exec /usr/bin/chrultrabook-tools "$@"
