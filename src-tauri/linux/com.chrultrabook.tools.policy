@@ -14,5 +14,6 @@
     <annotate key="org.freedesktop.policykit.exec.path">
       /usr/bin/chrultrabook-tools-root
     </annotate>
+    <annotate key="org.freedesktop.policykit.exec.allow_gui">true</annotate>
   </action>
 </policyconfig>
