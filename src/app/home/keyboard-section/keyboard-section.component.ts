@@ -204,9 +204,10 @@ export class KeyboardSectionComponent implements OnInit {
   }
 
   update_rgb(hex_code: string) {
+    let code = "0x" + hex_code;
     invoke("execute", {
       program: "ectool",
-      arguments: ["rgbkbd", "clear", hex_code],
+      arguments: ["rgbkbd", "clear", code],
       reply: false,
     });
   }

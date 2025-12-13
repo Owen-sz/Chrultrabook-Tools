@@ -30,7 +30,7 @@ export class KeyboardExtraComponent {
       let split = output.split(" ")[0].toLowerCase();
 
       console.log(split);
-      if (split == "ec") {
+      if (split != "ec") {
         console.log("disabled");
         this.rgb_enabled = true;
         this.cdr.detectChanges();

@@ -60,7 +60,7 @@
             min="0"
             max="100"
             class="form-range"
-            [disabled]="!rgbEnabled"
+            [disabled]="!rgbEnabled || !options_enabled"
           />
         </div>
       </div>
@@ -75,7 +75,7 @@
             min="0"
             max="255"
             class="form-range"
-            [disabled]="!rgbEnabled || rgbMode === 'rainbow'"
+            [disabled]="!rgbEnabled || !options_enabled"
           />
         </div>
         <div class="col-12 col-md-4">
@@ -86,7 +86,7 @@
             min="0"
             max="255"
             class="form-range"
-            [disabled]="!rgbEnabled || rgbMode === 'rainbow'"
+            [disabled]="!rgbEnabled || !options_enabled"
           />
         </div>
         <div class="col-12 col-md-4">
@@ -97,7 +97,7 @@
             min="0"
             max="255"
             class="form-range"
-            [disabled]="!rgbEnabled || rgbMode === 'rainbow'"
+            [disabled]="!rgbEnabled || !options_enabled"
           />
         </div>
       </div>
@@ -110,7 +110,7 @@
             [(ngModel)]="hexCodeInput"
             class="form-control"
             placeholder="Enter Hex Code"
-            [disabled]="!rgbEnabled || rgbMode === 'rainbow'"
+            [disabled]="!rgbEnabled || !options_enabled"
           />
         </div>
       </div>
@@ -182,15 +182,15 @@
           ></div>
         </div>
       </div>
-      @if (static_mode) {
+      @if (!isCustomMode) {
       <div class="row mt-4 text-center">
         <div class="col d-flex justify-content-center">
           <button
             class="btn btn-outline-success w-100"
-            (click)="apply_static()"
+            (click)="apply()"
             [disabled]="!rgbEnabled"
           >
-            Apply Color
+            Apply
           </button>
         </div>
       </div>

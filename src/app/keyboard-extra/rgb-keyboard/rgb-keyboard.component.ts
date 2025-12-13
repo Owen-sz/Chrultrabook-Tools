@@ -44,14 +44,15 @@ export class RgbKeyboardComponent implements OnDestroy {
   private _rgbGreen: number = 100;
   private _rgbBlue: number = 255;
   private _hexCodeInput: string = "FF64FF";
-  private _rgbMode: string = "static";
+  private _rgbMode: string = "off";
   default_button_state: string = "btn-outline-secondary";
   selectedKeyIndex: { row: number; col: number } | null = null;
   customCycleName: string = "My Custom Cycle";
 
+  options_enabled: boolean = false;
+
   generatedConfigJson: string = "";
 
-  static_mode: boolean = false;
   selectedProfileId: number | string = "off";
   customProfiles: SavedProfile[] = [];
 
@@ -160,6 +161,7 @@ export class RgbKeyboardComponent implements OnDestroy {
 
   ngOnInit() {
     this.loadCustomProfiles();
+    this.rgbEnabled = false;
   }
   private loadCustomProfiles(): void {
     const STORAGE_KEY = "rgb_profile";
@@ -192,6 +194,7 @@ export class RgbKeyboardComponent implements OnDestroy {
     return this._rgbEnabled;
   }
   set rgbEnabled(value: boolean) {
+    
     this._rgbEnabled = value;
     if (this._rgbEnabled && this.rgbMode === "custom") {
       this.startColorCycle();
@@ -204,10 +207,10 @@ export class RgbKeyboardComponent implements OnDestroy {
     return this._rgbMode;
   }
   set rgbMode(value: string) {
+    this.options_enabled = true;
     this._rgbMode = value;
     this.stopColorCycle();
     this._rgbEnabled = true;
-    this.static_mode = false;
 
     const profileId = parseInt(value, 10);
 
@@ -221,35 +224,22 @@ export class RgbKeyboardComponent implements OnDestroy {
 
     if (this._rgbMode === "custom" && this.rgbEnabled) {
       this.selectedProfileId = "off";
+      this.rgbEnabled = false;
     }
-
-    if (this._rgbMode === "off") {
-      this._rgbEnabled = false;
-      invoke("execute", {
-        program: "ectool",
-        arguments: ["rgbkbd", "demo", "0"],
-        reply: false,
-      });
-    }
-
-    if (this._rgbMode == "static") {
-      this.static_mode = true;
+    
+   if (this._rgbMode === "off") {
+      this.rgbEnabled = false;
+      this.options_enabled = false;
     }
 
     if (this._rgbMode == "flow") {
-      invoke("execute", {
-        program: "ectool",
-        arguments: ["rgbkbd", "demo", "1"],
-        reply: false,
-      });
+      this.rgbEnabled = true;
+      this.options_enabled = false;
     }
 
     if (this._rgbMode == "dot") {
-      invoke("execute", {
-        program: "ectool",
-        arguments: ["rgbkbd", "demo", "2"],
-        reply: false,
-      });
+      this.rgbEnabled = true;
+      this.options_enabled = false;
     }
   }
 
@@ -638,12 +628,39 @@ export class RgbKeyboardComponent implements OnDestroy {
     }
   }
 
-  public apply_static() {
-    invoke("execute", {
-      program: "ectool",
-      arguments: ["rgbkbd", "clear", this.hexCodeInput],
-      reply: false,
-    });
+  public apply() {
+    if (this._rgbMode === "off") {
+      invoke("execute", {
+        program: "ectool",
+        arguments: ["rgbkbd", "demo", "0"],
+        reply: false,
+      });
+    }
+
+    if (this._rgbMode == "static") {
+      let cmd_hex = "0x" + this.hexCodeInput;
+      invoke("execute", {
+        program: "ectool",
+        arguments: ["rgbkbd", "clear", cmd_hex],
+        reply: false,
+      });
+    }
+
+    if (this._rgbMode == "flow") {
+      invoke("execute", {
+        program: "ectool",
+        arguments: ["rgbkbd", "demo", "1"],
+        reply: false,
+      });
+    }
+
+    if (this._rgbMode == "dot") {
+      invoke("execute", {
+        program: "ectool",
+        arguments: ["rgbkbd", "demo", "2"],
+        reply: false,
+      });
+    }
   }
 
   get isCustomMode(): boolean {
