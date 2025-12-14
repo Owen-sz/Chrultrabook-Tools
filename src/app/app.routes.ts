@@ -12,6 +12,7 @@ import { SettingsComponent } from "./settings/settings.component";
 import { KeyboardExtraComponent } from "./keyboard-extra/keyboard-extra.component";
 import { RgbKeyboardComponent } from "./keyboard-extra/rgb-keyboard/rgb-keyboard.component";
 import { KeyboardRemapComponent } from "./keyboard-extra/keyboard-remap/keyboard-remap.component";
+import { BatteryComponent } from "./battery/battery.component";
 
 export const routes: Routes = [
   { path: "", component: HomeComponent },
@@ -36,6 +37,10 @@ export const routes: Routes = [
         component: FanDataComponent,
       },
     ],
+  },
+  {
+    path: "Battery",
+    component: BatteryComponent
   },
   {
     path: "Keyboard_extra",

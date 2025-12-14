@@ -19,7 +19,7 @@
     </div>
   </div>
 </div>
-<div class="grid keyboard_controls px-2 pt-1">
+<div class="keyboard_controls px-2 pt-1">
   <input
     (click)="update_percentage($event)"
     type="range"
@@ -31,12 +31,4 @@
     [value]="percentage"
     [disabled]="backlight_exists"
   />
-  <div class="ps-1">
-    <button
-      class="btn btn-outline-secondary border-0 fs-4 w-100 p-0"
-      (click)="keyboard_more()"
-    >
-      <img class="p-0" src="../../../assets/keyboard/more.svg" alt="extra" />
-    </button>
-  </div>
 </div>

@@ -15,7 +15,7 @@ import { LogicalSize } from "@tauri-apps/api/dpi";
     KeyboardSectionComponent,
     ActivityLightSectionComponent,
     ExtraSectionComponent,
-  ],
+],
   templateUrl: "./home.component.html",
   styleUrl: "./home.component.scss",
 })

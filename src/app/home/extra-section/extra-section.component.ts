@@ -23,7 +23,6 @@ export class ExtraSectionComponent {
     });
   }
   diagnostic() {
-    console.log("diag");
     invoke("open_window", {
       name: "Diagnostics",
       width: 760.0,
@@ -32,11 +31,28 @@ export class ExtraSectionComponent {
     });
   }
   settings() {
-    console.log("settings");
     invoke("open_window", {
       name: "Settings",
       width: 600.0,
       height: 450.0,
+      zoom: this.zoom,
+    });
+  }
+  keyboard()
+  {
+    invoke("open_window", {
+      name: "Keyboard_extra",
+      width: 660.0,
+      height: 410.0,
+      zoom: this.zoom,
+    });
+  }
+  battery()
+  {
+    invoke("open_window", {
+      name: "Battery",
+      width: 900.0,
+      height: 410.0,
       zoom: this.zoom,
     });
   }

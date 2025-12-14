@@ -126,7 +126,40 @@ fn diagnostics(handle: tauri::AppHandle, selected: &str) -> String {
         ),
         "Power Delivery Information" => {
             execute(handle, "ectool", helper::to_vec_string(vec!["pdlog"]), true)
-        }
+        },
+        "cbi0" => {
+            execute(handle, "ectool", helper::to_vec_string(vec!["cbi", "get", "0"]), true)
+        },
+        "cbi1" => {
+            execute(handle, "ectool", helper::to_vec_string(vec!["cbi", "get", "1"]), true)
+        },
+        "cbi2" => {
+            execute(handle, "ectool", helper::to_vec_string(vec!["cbi", "get", "2"]), true)
+        },
+        "cbi3" => {
+            execute(handle, "ectool", helper::to_vec_string(vec!["cbi", "get", "3"]), true)
+        },
+        "cbi4" => {
+            execute(handle, "ectool", helper::to_vec_string(vec!["cbi", "get", "4"]), true)
+        },
+        "cbi5" => {
+            execute(handle, "ectool", helper::to_vec_string(vec!["cbi", "get", "5"]), true)
+        },
+        "cbi6" => {
+            execute(handle, "ectool", helper::to_vec_string(vec!["cbi", "get", "6"]), true)
+        },
+        "cbi7" => {
+            execute(handle, "ectool", helper::to_vec_string(vec!["cbi", "get", "7"]), true)
+        },
+        "cbi8" => {
+            execute(handle, "ectool", helper::to_vec_string(vec!["cbi", "get", "8"]), true)
+        },
+        "cbi9" => {
+            execute(handle, "ectool", helper::to_vec_string(vec!["cbi", "get", "9"]), true)
+        },
+        "cbi10" => {
+            execute(handle, "ectool", helper::to_vec_string(vec!["cbi", "get", "10"]), true)
+        },
         _ => "Select An Option".to_string(),
     };
     let cleaned: String = output
