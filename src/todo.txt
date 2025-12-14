@@ -1,2 +1,0 @@
-1. ectool chargestate show
-2. ectool cbi get 

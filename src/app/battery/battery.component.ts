@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { invoke } from '@tauri-apps/api/core';
 
 @Component({
@@ -14,6 +14,8 @@ export class BatteryComponent {
   public selectMode(newMode: 'Normal' | 'Idle' | 'Discharge'): void {
     this.currentMode = newMode;
   }
+
+  constructor(private cdr: ChangeDetectorRef) {}
   ngOnInit()
   {
     invoke("execute", {
@@ -27,7 +29,9 @@ export class BatteryComponent {
         console.log(output);
         if(output == "error")
         {
-            this.oldec = false;
+          console.log('hi')
+          this.oldec = true;
+          this.cdr.detectChanges();
         }
       }
     });

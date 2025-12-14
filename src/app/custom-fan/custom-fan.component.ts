@@ -23,7 +23,7 @@ export class CustomFanComponent {
     const el = this.containerRef.nativeElement as HTMLElement;
     const rect = el.getBoundingClientRect();
 
-    const width = Math.ceil(rect.width);
+    const width = Math.ceil(rect.width) + 10;
     const height = Math.ceil(rect.height + 10); // Add padding for window decorations
 
     const appWindow = getCurrentWindow();

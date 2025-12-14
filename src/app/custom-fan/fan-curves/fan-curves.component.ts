@@ -1,4 +1,4 @@
-import { Component, ViewChild, inject, OnInit } from "@angular/core";
+import { Component, ViewChild, inject, OnInit, ChangeDetectorRef } from "@angular/core";
 import { FanService } from "../../services/fan.service";
 import { profile } from "../../services/profiles";
 
@@ -19,12 +19,13 @@ export class FanCurvesComponent implements OnInit {
   profiles: profile[] = [];
   fan_service: FanService = inject(FanService);
 
-  constructor() {
+  constructor(private cdr: ChangeDetectorRef) {
     setTimeout(() => {
       this.profiles = this.fan_service.getProfiles();
       console.log(this.profiles);
       setTimeout(() => {
         this.fan_profiles();
+        this.cdr.detectChanges();
       });
     }, 550);
 
