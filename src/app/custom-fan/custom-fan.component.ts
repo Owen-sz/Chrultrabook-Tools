@@ -20,15 +20,17 @@ export class CustomFanComponent {
     window.location.reload();
   }
   private async resizeWindowToContent() {
-    const el = this.containerRef.nativeElement as HTMLElement;
-    const rect = el.getBoundingClientRect();
+    setTimeout(async () => {
+      const el = this.containerRef.nativeElement as HTMLElement;
+      const rect = el.getBoundingClientRect();
 
-    const width = Math.ceil(rect.width) + 10;
-    const height = Math.ceil(rect.height + 10); // Add padding for window decorations
+      const width = Math.ceil(rect.width);
+      const height = Math.ceil(rect.height + 10); // Add padding for window decorations
 
-    const appWindow = getCurrentWindow();
-    const size = new LogicalSize(width, height);
-    await appWindow.setSize(size);
+      const appWindow = getCurrentWindow();
+      const size = new LogicalSize(width, height);
+      await appWindow.setSize(size);
+    }, 2000);
   }
   ngOnInit() {
     this.resizeWindowToContent();

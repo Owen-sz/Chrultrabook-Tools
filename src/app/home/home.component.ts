@@ -15,7 +15,7 @@ import { LogicalSize } from "@tauri-apps/api/dpi";
     KeyboardSectionComponent,
     ActivityLightSectionComponent,
     ExtraSectionComponent,
-],
+  ],
   templateUrl: "./home.component.html",
   styleUrl: "./home.component.scss",
 })
@@ -27,15 +27,17 @@ export class HomeComponent {
   constructor(private cdr: ChangeDetectorRef) {}
 
   private resizeWindowToContent() {
-    let el = this.containerRef.nativeElement as HTMLElement;
-    let rect = el.getBoundingClientRect();
+    setTimeout(() => {
+      let el = this.containerRef.nativeElement as HTMLElement;
+      let rect = el.getBoundingClientRect();
 
-    let width = Math.ceil(rect.width) + 10;
-    let height = Math.ceil(rect.height) + 10; // Add padding for window decorations
+      let width = Math.ceil(rect.width);
+      let height = Math.ceil(rect.height); // Add padding for window decorations
 
-    let appWindow = getCurrentWindow();
-    let size = new LogicalSize(width, height);
-    appWindow.setSize(size);
+      let appWindow = getCurrentWindow();
+      let size = new LogicalSize(width, height);
+      appWindow.setSize(size);
+    }, 2000);
   }
 
   ngOnInit() {
@@ -52,10 +54,7 @@ export class HomeComponent {
         }
       });
     });
-    setTimeout(() => {
-      this.resizeWindowToContent();
-    }, 1500);
-
+    this.resizeWindowToContent();
     invoke("os").then((os) => {
       if (typeof os === "string") {
         if (os != "linux") {
@@ -70,7 +69,6 @@ export class HomeComponent {
             }
           });
         }
-        this.resizeWindowToContent();
       }
     });
   }
