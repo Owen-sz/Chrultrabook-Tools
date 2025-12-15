@@ -10,15 +10,15 @@
 
 ## Features
 
-- CPU Temperature
+- CPU Temperature Monitoring
+- CPU Temperature Graph
 - Keyboard Remap (Windows)
-- RGB Keyboard controls
+- RGB Keyboard Controls
 - Fan Speed Monitoring
 - Custom Fan Curves
 - Custom Fan Profiles
 - Fan Speed Graph
 - Custom Fan Profiles
-- CPU Temperature Graph
 - Start Application in System Tray
 - Start Application on System Boot
 - Start Custom Fan Profiles on System Boot
@@ -27,13 +27,12 @@
 - Change Keyboard Brightness
 - Change Activity Light Colors (on select Chromebooks)
 - System Diagnostics
-  
 
 ## Install Instructions
 
 ### Linux
 
-#### Fedora/RHEL and derivatives
+#### Fedora and Derivatives
 
 Add the Terra repository (if using Ultramarine Linux, Terra is pre-installed). Instructions can be found [here](https://github.com/terrapkg/packages/blob/frawhide/README.md).
 
@@ -43,16 +42,16 @@ Install Chrultrabook-Tools:
 dnf install chrultrabook-tools
 ```
 
-#### Debian and derivatives
+#### Debian and Derivatives
 
-##### Add the Chrultrabook repository:
+##### Add the Chrultrabook Repository:
 1. download and save the repository signing key
 
     ```
     wget -O /usr/share/keyrings/chrultrabook-debian-archive-keyring.gpg https://chrultrabook.sakamoto.pl/repos/debian/chrultrabook-debian-pub.asc
     ```
 
-2. create a sources files in sources.list.d
+2. Create a sources files in sources.list.d
     ```
     echo "
     Types: deb
@@ -95,10 +94,10 @@ Download the Arch package from the Releases page, then install:
 pacman -U ~/Downloads/chrultrabook-tools-VERSION-pkg.tar.zst
 ```
 
-(replace the VERSION with the latest version, and the file location, if needed)
+(Replace the VERSION with the latest version, and the file location, if needed.)
 
-#### Compiled binary
-- You must start the application as root as the ectool binary requires sudo privileges 
+#### Build from Source
+- run `npm run tauri dev`.
 
 ### Windows
 
