@@ -47,11 +47,21 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y ${{ env.ubuntu-deps }}
-          mkdir -p $GITHUB_WORKSPACE/src-tauri/build
-          cp LICENSE $GITHUB_WORKSPACE/src-tauri/build
-          cp README.md $GITHUB_WORKSPACE/src-tauri/build
       - name: Install npm dependencies
         run: npm install
+      - name: Setup Windows Build Enviornment
+        if: matrix.platform == 'windows-2022'
+        run: |
+            mkdir %GITHUB_WORKSPACE%\src-tauri\build
+            copy LICENSE %GITHUB_WORKSPACE%\src-tauri\build
+            copy README.md %GITHUB_WORKSPACE%\src-tauri\build
+      - name: Setup macOS and Linux Build Environment
+        if: matrix.platform == 'ubuntu-22.04' || matrix.platform == 'macos-15-intel'
+        run: |
+            mkdir -p $GITHUB_WORKSPACE/src-tauri/build
+            cp LICENSE $GITHUB_WORKSPACE/src-tauri/build
+            cp README.md $GITHUB_WORKSPACE/src-tauri/build
+            
       - name: Build Application
         uses: tauri-apps/tauri-action@v0
         env:
