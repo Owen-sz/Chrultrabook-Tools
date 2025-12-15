@@ -15,7 +15,13 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "windows": {
+    "msi": {
+      "files": {
+        "chrultrabook-tools/LICENSE": "./build/LICENSE",
+        "chrultrabook-tools/readme": "./buld/README.md"
+      }
+    },
+    "nsis": {
       "files": {
         "chrultrabook-tools/LICENSE": "./build/LICENSE",
         "chrultrabook-tools/readme": "./buld/README.md"
