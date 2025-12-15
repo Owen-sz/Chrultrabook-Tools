@@ -11,6 +11,8 @@
 ## Features
 
 - CPU Temperature
+- Keyboard Remap (Windows)
+- RGB Keyboard controls
 - Fan Speed Monitoring
 - Custom Fan Curves
 - Custom Fan Profiles
@@ -20,10 +22,11 @@
 - Start Application in System Tray
 - Start Application on System Boot
 - Start Custom Fan Profiles on System Boot
+- Start Custom RGB Profile on System Boot
+- Create Custom RGB Profiles
 - Change Keyboard Brightness
 - Change Activity Light Colors (on select Chromebooks)
 - System Diagnostics
-- Keyboard Backlight
   
 
 ## Install Instructions
@@ -42,25 +45,55 @@ dnf install chrultrabook-tools
 
 #### Debian and derivatives
 
-Add the Chrultrabook-Tools repository:
+##### Add the Chrultrabook repository:
+1. download and save the repository signing key
 
-xxx
+    ```
+    wget -O /usr/share/keyrings/chrultrabook-debian-archive-keyring.gpg https://chrultrabook.sakamoto.pl/repos/debian/chrultrabook-debian-pub.asc
+    ```
 
-Install Chrultrabook-Tools:
+2. create a sources files in sources.list.d
+    ```
+    echo "
+    Types: deb
+    URIs: https://chrultrabook.sakamoto.pl/repos/debian/
+    Suites: stable
+    Components: main
+    Signed-By: /usr/share/keyrings/chrultrabook-debian-archive-keyring.gpg
+    " | sudo tee /etc/apt/sources.list.d/chrultrabook.sources > /dev/null
+    ```
 
-```
-apt install chultrabook-tools
-```
+3. Run
+    ```
+    sudo apt-get update
+    ```
+
+##### Install ectool and cbmem
+
+  ```
+  sudo apt-get install cbmem chromium-ectool
+  ```
+
+##### Install Chrultrabook-Tools:
+1. ```cd``` to the directory with the .deb file
+2. run the following command with the correct version
+  ```
+  sudo apt install ./chrultrabook-tools_3.1.2_amd64.deb
+  ```
 
 #### Arch and derivatives
 
 install AUR dependencies (for this example we are using [paru](https://github.com/Morganamilo/paru):
 
+```
 paru -S chromium-ectool cbmem
+```
 
 Download the Arch package from the Releases page, then install:
 
+```
 pacman -U ~/Downloads/chrultrabook-tools-VERSION-pkg.tar.zst
+```
 
 (replace the VERSION with the latest version, and the file location, if needed)
 
