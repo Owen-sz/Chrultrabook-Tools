@@ -25,7 +25,7 @@
         }
       },
       "rpm": {
-        "depends": ["coreboot-utils-cbmem", "chromium-ectool", "policykit-1"],
+        "depends": ["coreboot-utils-cbmem", "chromium-ectool", "polkit"],
         "desktopTemplate": "./linux/chrultrabook-tools.desktop",
         "files": {
           "/usr/bin/chrultrabook-tools-root": "./linux/chrultrabook-tools-root",
