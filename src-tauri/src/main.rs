@@ -368,6 +368,7 @@ fn set_remap(handle: tauri::AppHandle, params: String) -> bool {
         .dialog()
         .file()
         .set_file_name("croskbsettings.bin")
+        .set_directory("C:/Windows/System32/drivers")
         .add_filter("Binary File", &["bin"])
         .save_file(move |file_path| {
             if let Some(file) = file_path {
