@@ -1,2 +1,10 @@
 #!/bin/bash
+export HOME="${HOME:-/root}"
+export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+export DISPLAY="${DISPLAY:-:0}"
+export XAUTHORITY="${XAUTHORITY:-$HOME/.Xauthority}"
+
+export GSK_RENDERER=cairo
+
 exec /usr/bin/chrultrabook-tools "$@"
