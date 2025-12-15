@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Chrultrabook Tools
 Comment=Chrultrabook Hardware Controller
-Exec=/usr/lib/policykit-1/polkit-agent-helper-1 --action-id=com.chrultrabook.tools.run --exec-path=/usr/bin/chrultrabook-tools-root
+Exec=pkexec /usr/bin/chrultrabook-tools-root
 Icon=chrultrabook-tools
 Terminal=false
 Type=Application
