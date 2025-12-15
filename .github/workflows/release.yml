@@ -71,12 +71,12 @@ jobs:
             curl https://sh.rustup.rs -sSf | bash -s -- -y &&
             source \$HOME/.cargo/env &&
 
-            mkdir -p target/release/bundle/linux/arch/ &&
-            cp target/release/bundle/deb/*.deb target/release/bundle/linux/arch/ &&
-            cp tauri.conf.json target/release/bundle/linux/arch/ &&
-            cp -r linux/arch/* target/release/bundle/linux/arch/ &&
+            mkdir -p target/release/bundle/arch/ &&
+            cp target/release/bundle/deb/*.deb target/release/bundle/arch/ &&
+            cp tauri.conf.json target/release/bundle/arch/ &&
+            cp -r linux/arch/* target/release/bundle/arch/ &&
 
-            cd target/release/bundle/linux/arch &&
+            cd target/release/bundle/arch &&
             makepkg -df --noconfirm
           ' "
 
