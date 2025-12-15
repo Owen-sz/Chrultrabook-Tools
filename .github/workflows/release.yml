@@ -42,11 +42,14 @@ jobs:
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-cargo-
-      - name: Install OS dependencies
+      - name: Install OS dependencies and setup build environment
         if: matrix.platform == 'ubuntu-22.04'
         run: |
           sudo apt-get update
           sudo apt-get install -y ${{ env.ubuntu-deps }}
+          mkdir -p $GITHUB_WORKSPACE/src-tauri/build
+          cp LICENSE $GITHUB_WORKSPACE/src-tauri/build
+          cp README.md $GITHUB_WORKSPACE/src-tauri/build
       - name: Install npm dependencies
         run: npm install
       - name: Build Application
@@ -68,12 +71,12 @@ jobs:
             curl https://sh.rustup.rs -sSf | bash -s -- -y &&
             source \$HOME/.cargo/env &&
 
-            mkdir -p target/release/bundle/arch/ &&
-            cp target/release/bundle/deb/*.deb target/release/bundle/arch/ &&
-            cp tauri.conf.json target/release/bundle/arch/ &&
-            cp -r arch/* target/release/bundle/arch/ &&
+            mkdir -p target/release/bundle/linux/arch/ &&
+            cp target/release/bundle/deb/*.deb target/release/bundle/linux/arch/ &&
+            cp tauri.conf.json target/release/bundle/linux/arch/ &&
+            cp -r linux/arch/* target/release/bundle/linux/arch/ &&
 
-            cd target/release/bundle/arch &&
+            cd target/release/bundle/linux/arch &&
             makepkg -df --noconfirm
           ' "
 
@@ -91,7 +94,7 @@ jobs:
             # Linux
             src-tauri/target/release/bundle/deb/*.deb
             src-tauri/target/release/bundle/rpm/*.rpm
-            src-tauri/target/release/bundle/arch/*.pkg.tar.zst
+            src-tauri/target/release/bundle/linux/arch/*.pkg.tar.zst
 
             # macOS
             src-tauri/target/release/bundle/dmg/*.dmg

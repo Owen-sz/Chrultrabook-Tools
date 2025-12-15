@@ -15,13 +15,27 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
+    "windows": {
+      "files": {
+        "chrultrabook-tools/LICENSE": "./build/LICENSE",
+        "chrultrabook-tools/readme": "./buld/README.md"
+      }
+    },
+    "dmg":{
+      "files": {
+        "chrultrabook-tools/LICENSE": "./build/LICENSE",
+        "chrultrabook-tools/readme": "./buld/README.md"
+      }
+    },
     "linux": {
       "deb": {
         "depends": ["chromium-ectool", "cbmem", "policykit-1"],
         "desktopTemplate": "./linux/chrultrabook-tools.desktop",
         "files": {
           "/usr/bin/chrultrabook-tools-root": "./linux/chrultrabook-tools-root",
-          "/usr/share/polkit-1/actions/com.chrultrabook.tools.policy": "./linux/com.chrultrabook.tools.policy"
+          "/usr/share/polkit-1/actions/com.chrultrabook.tools.policy": "./linux/com.chrultrabook.tools.policy",
+          "/usr/share/licenses/chrultrabook-tools/LICENSE": "./build/LICENSE",
+          "/usr/share/doc/chrultrabook-tools/README.md": "./build/README.md"
         }
       },
       "rpm": {
@@ -29,7 +43,9 @@
         "desktopTemplate": "./linux/chrultrabook-tools.desktop",
         "files": {
           "/usr/bin/chrultrabook-tools-root": "./linux/chrultrabook-tools-root",
-          "/usr/share/polkit-1/actions/com.chrultrabook.tools.policy": "./linux/com.chrultrabook.tools.policy"
+          "/usr/share/polkit-1/actions/com.chrultrabook.tools.policy": "./linux/com.chrultrabook.tools.policy",
+          "/usr/share/licenses/chrultrabook-tools/LICENSE": "./build/LICENSE",
+          "/usr/share/doc/chrultrabook-tools/README.md": "./build/README.md"
         }
       }
     }
