@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, inject, OnInit } from "@angular/core";
 import { FanService } from "../../services/fan.service";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { invoke } from "@tauri-apps/api/core";
@@ -8,7 +8,7 @@ import { invoke } from "@tauri-apps/api/core";
   imports: [],
   templateUrl: "./fan-section.component.html",
   styleUrl: "./fan-section.component.scss",
-  providers: [FanService]
+  providers: [FanService],
 })
 export class FanSectionComponent implements OnInit {
   selected_mode: string = "N/A";
@@ -35,8 +35,7 @@ export class FanSectionComponent implements OnInit {
   zoom: number = 1;
 
   fanService: FanService = inject(FanService);
-
-  constructor() { }
+  constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     invoke("execute", {
@@ -46,6 +45,7 @@ export class FanSectionComponent implements OnInit {
     }).then((event) => {
       let output: any = event;
       let split = output.split(" ");
+      console.log(split[0]);
       if (split[0] == "Fan") {
         //fans are auto disabled, this reverses the disabling
         this.fan_auto_class = "btn-outline-success";
@@ -55,6 +55,7 @@ export class FanSectionComponent implements OnInit {
         this.extension = "RPM";
         this.disabled_class = "";
         this.fan_exists = false;
+        this.cdr.detectChanges();
 
         //checks if user wants fan curves on boot and applies the respective classes
         invoke("local_storage", {
@@ -67,8 +68,7 @@ export class FanSectionComponent implements OnInit {
               this.auto_active = "active";
               this.selected_mode = "Auto";
               this.fan_auto();
-            }
-            else {
+            } else {
               let output = JSON.parse(event);
               if (output) {
                 const selected_data = this.fanService.getSelected();
@@ -81,8 +81,8 @@ export class FanSectionComponent implements OnInit {
                 this.selected_mode = "Auto";
                 this.fan_auto();
               }
-
             }
+            this.cdr.detectChanges();
           }
         });
 
@@ -99,7 +99,6 @@ export class FanSectionComponent implements OnInit {
           this.zoom = number;
         }
       });
-
     });
 
     //starts the interval of reading the cpu temps
@@ -119,9 +118,6 @@ export class FanSectionComponent implements OnInit {
       console.log(this.fan_array);
       this.fan_custom();
     });
-
-
-
   }
 
   async get_cpu_temp() {
@@ -197,7 +193,12 @@ export class FanSectionComponent implements OnInit {
   }
 
   open_fan_custom_window() {
-    invoke("open_window", { name: "Custom_Fans", width: 980.0, height: 540.0, zoom: this.zoom });
+    invoke("open_window", {
+      name: "Custom_Fans",
+      width: 980.0,
+      height: 540.0,
+      zoom: this.zoom,
+    });
   }
 
   ngOnDestroy() {

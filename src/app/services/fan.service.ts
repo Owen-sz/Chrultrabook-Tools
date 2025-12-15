@@ -18,7 +18,7 @@ export class FanService {
   public profiles_list: profile[] = this.boot();
 
   boot(): profile[] {
-    invoke("get_json").then((res) => {
+    invoke("get_fan_json").then((res) => {
       this.profiles_list = JSON.parse(res as string);
     });
     return this.profiles_list;

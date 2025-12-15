@@ -7,13 +7,7 @@
   },
   "bundle": {
     "active": true,
-    "targets": [
-      "deb",
-      "rpm",
-      "msi",
-      "nsis",
-      "dmg"
-    ],
+    "targets": ["deb", "rpm", "msi", "nsis", "dmg"],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
@@ -23,21 +17,25 @@
     ],
     "linux": {
       "deb": {
-        "depends": [
-          "chromium-ectool",
-          "chromium-cbmem"
-        ]
+        "depends": ["chromium-ectool", "cbmem", "policykit-1"],
+        "desktopTemplate": "./linux/chrultrabook-tools.desktop",
+        "files": {
+          "/usr/bin/chrultrabook-tools-root": "./linux/chrultrabook-tools-root",
+          "/usr/share/polkit-1/actions/com.chrultrabook.tools.policy": "./linux/com.chrultrabook.tools.policy"
+        }
       },
       "rpm": {
-        "depends": [
-          "cbmem",
-          "chromium-ectool"
-        ]
+        "depends": ["coreboot-utils-cbmem", "chromium-ectool", "policykit-1"],
+        "desktopTemplate": "./linux/chrultrabook-tools.desktop",
+        "files": {
+          "/usr/bin/chrultrabook-tools-root": "./linux/chrultrabook-tools-root",
+          "/usr/share/polkit-1/actions/com.chrultrabook.tools.policy": "./linux/com.chrultrabook.tools.policy"
+        }
       }
     }
   },
   "productName": "chrultrabook-tools",
-  "version": "3.0.7",
+  "version": "3.1.2",
   "identifier": "com.chrultrabook.tools",
   "plugins": {},
   "app": {
@@ -48,7 +46,7 @@
       {
         "title": "Chrultrabook Tools",
         "width": 430,
-        "height": 480,
+        "height": 520,
         "maximizable": true,
         "resizable": true,
         "theme": "Dark"

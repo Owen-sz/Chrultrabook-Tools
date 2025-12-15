@@ -6,18 +6,28 @@ mod custom_fan;
 mod execute;
 mod get_all_windows;
 mod helper;
+mod keyboard_remap;
 mod open_window;
 mod save_to_files;
 mod save_to_local;
 mod temps;
 
 //external crates
+use std::error::Error;
+use std::fs;
 use tauri::image::Image;
 use tauri::menu::{IconMenuItemBuilder, MenuBuilder, MenuItemBuilder};
 use tauri::tray::TrayIconBuilder;
 use tauri::{AppHandle, Emitter, EventTarget, Manager};
 use tauri_plugin_autostart::{MacosLauncher, ManagerExt};
 use tauri_plugin_clipboard_manager::ClipboardExt;
+use tauri_plugin_dialog::DialogExt;
+
+#[cfg(target_os = "linux")]
+use std::process::Command;
+
+#[cfg(target_os = "linux")]
+use std::os::unix::process::CommandExt;
 
 //open windows
 #[tauri::command]
@@ -116,7 +126,40 @@ fn diagnostics(handle: tauri::AppHandle, selected: &str) -> String {
         ),
         "Power Delivery Information" => {
             execute(handle, "ectool", helper::to_vec_string(vec!["pdlog"]), true)
-        }
+        },
+        "cbi0" => {
+            execute(handle, "ectool", helper::to_vec_string(vec!["cbi", "get", "0"]), true)
+        },
+        "cbi1" => {
+            execute(handle, "ectool", helper::to_vec_string(vec!["cbi", "get", "1"]), true)
+        },
+        "cbi2" => {
+            execute(handle, "ectool", helper::to_vec_string(vec!["cbi", "get", "2"]), true)
+        },
+        "cbi3" => {
+            execute(handle, "ectool", helper::to_vec_string(vec!["cbi", "get", "3"]), true)
+        },
+        "cbi4" => {
+            execute(handle, "ectool", helper::to_vec_string(vec!["cbi", "get", "4"]), true)
+        },
+        "cbi5" => {
+            execute(handle, "ectool", helper::to_vec_string(vec!["cbi", "get", "5"]), true)
+        },
+        "cbi6" => {
+            execute(handle, "ectool", helper::to_vec_string(vec!["cbi", "get", "6"]), true)
+        },
+        "cbi7" => {
+            execute(handle, "ectool", helper::to_vec_string(vec!["cbi", "get", "7"]), true)
+        },
+        "cbi8" => {
+            execute(handle, "ectool", helper::to_vec_string(vec!["cbi", "get", "8"]), true)
+        },
+        "cbi9" => {
+            execute(handle, "ectool", helper::to_vec_string(vec!["cbi", "get", "9"]), true)
+        },
+        "cbi10" => {
+            execute(handle, "ectool", helper::to_vec_string(vec!["cbi", "get", "10"]), true)
+        },
         _ => "Select An Option".to_string(),
     };
     let cleaned: String = output
@@ -229,7 +272,7 @@ fn autostart(app: AppHandle, value: bool) {
 }
 
 #[tauri::command]
-async fn get_json() -> String {
+async fn get_fan_json() -> String {
     let output = local_storage("get", "profiles", "");
     let default_array = String::from("[{\"id\":0,\"name\":\"Default\",\"array\":[0,10,25,40,60,80,95,100,100,100,100,100,100],\"selected\":true,\"disabled\":true,\"class\":\"transparent\",\"img_class\":\"btn-outline-info\",\"img\":\"\\uF4CB\"},{\"id\":1,\"name\":\"Aggressive\",\"array\":[0,10,40,50,60,90,100,100,100,100,100,100,100],\"selected\":false,\"disabled\":true,\"class\":\"transparent\",\"img_class\":\"btn-outline-info\",\"img\":\"\\uF4CB\"},{\"id\":2,\"name\":\"Quiet\",\"array\":[0,15,20,30,40,55,90,100,100,100,100,100,100],\"selected\":false,\"disabled\":true,\"class\":\"transparent\",\"img_class\":\"btn-outline-info\",\"img\":\"\\uF4CB\"}]");
     if !output.contains("[") {
@@ -237,6 +280,12 @@ async fn get_json() -> String {
     } else {
         output
     }
+}
+
+#[tauri::command]
+async fn get_rgb_json() -> String {
+    let output = local_storage("get", "rgbprofiles", "");
+    return output;
 }
 
 #[tauri::command]
@@ -257,6 +306,13 @@ fn transfer_fan_curves(app: AppHandle, curves: String) {
 }
 
 #[tauri::command]
+fn transfer_rgb(app: AppHandle, rgb: String) {
+    println!("{}", &rgb);
+    app.emit_to(EventTarget::webview_window("main"), "rgb", &rgb)
+        .expect("failure to transmit data");
+}
+
+#[tauri::command]
 fn setzoom(handle: tauri::AppHandle, scale: f64) {
     let windows = handle.webview_windows();
     for (_, window) in windows.iter() {
@@ -273,18 +329,85 @@ fn reset(handle: tauri::AppHandle) {
     let _ = local_storage("remove", "zoom", "");
     let _ = local_storage("remove", "profiles", "");
     let _ = local_storage("remove", "app_boot", "");
+    let _ = local_storage("remove", "rgb", "");
     autostart(handle.clone(), false);
 
     handle.restart();
 }
+#[tauri::command]
+fn get_remap_json(hard_reset: bool) -> String {
+    keyboard_remap::read_config(hard_reset)
+}
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    #[cfg(target_os = "linux")]
-    {
-        if std::env::var("DISABLE_ESCALATION").is_err() {
-            karen::pkexec()?;
+#[tauri::command]
+fn set_remap(handle: tauri::AppHandle, params: String) -> bool {
+    let created_backup = local_storage("get", "keyboard_backup", " ");
+    if created_backup.len() == 0 {
+        let output = keyboard_remap::create_backup();
+        match output {
+            Err(e) => {
+                println!("Error: {}", e);
+                return false;
+            }
+            _ => {}
         }
     }
+
+    let buffer: Vec<u8> = match keyboard_remap::generate_config_from_json(&params) {
+        Ok(b) => b,
+        Err(e) => {
+            println!("Error {}", e);
+            return false;
+        }
+    };
+
+    let execution_handle = handle.clone();
+    let buffer_clone = buffer.clone();
+
+    handle
+        .dialog()
+        .file()
+        .set_file_name("croskbsettings.bin")
+        .set_directory("C:/Windows/System32/drivers")
+        .add_filter("Binary File", &["bin"])
+        .save_file(move |file_path| {
+            if let Some(file) = file_path {
+                match fs::write(file.to_string(), &buffer_clone) {
+                    Ok(_) => {
+                        execute::execute_relay(execution_handle, "keyboard", Vec::new(), false);
+                    }
+                    Err(e) => {
+                        println!("Error writing file: {}", e);
+                    }
+                }
+            } else {
+                println!("File save cancelled by user.");
+            }
+        });
+
+    return true;
+}
+#[tauri::command]
+fn reset_remap() -> bool {
+    return true;
+}
+
+fn elevate() -> Result<(), Box<dyn Error>> {
+    #[cfg(target_os = "linux")]
+    {
+        if unsafe { libc::geteuid() } != 0 {
+            let exe = std::env::current_exe()?;
+            let err = Command::new("pkexec")
+                .arg(exe)
+                .args(std::env::args().skip(1))
+                .exec();
+            return Err(Box::new(err));
+        }
+    }
+    Ok(())
+}
+fn main() -> Result<(), Box<dyn Error>> {
+    //let _ = elevate()?;
     tauri::Builder::default()
         .plugin(tauri_plugin_process::init())
         .setup(|app| {
@@ -405,11 +528,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             os,
             change_activity_light,
             autostart,
-            get_json,
+            get_fan_json,
+            get_rgb_json,
             set_custom_fan,
             transfer_fan_curves,
+            transfer_rgb,
             setzoom,
             reset,
+            get_remap_json,
+            set_remap,
+            reset_remap,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

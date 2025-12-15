@@ -1,0 +1,221 @@
+<div class="row">
+  <div class="col">
+    <footer class="fixed-bottom bg-dark p-3" data-bs-theme="dark">
+      <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="text-start d-flex flex-wrap gap-4 text-white">
+            <span class="fw-normal">
+              <span class="fw-normal">NoDetect</span>
+              <small class="text-white opacity-75"> - No detection</small>
+            </span>
+            <span class="fw-normal">
+              <span class="fw-normal">Enforce</span>
+              <small class="text-white opacity-75"> - Must be pressed</small>
+            </span>
+            <span class="fw-normal">
+              <span class="fw-normal">EnforceNot</span>
+              <small class="text-white opacity-75">
+                - Must not be pressed</small
+              >
+            </span>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button
+              class="btn btn-outline-danger btn-sm"
+              (click)="resetToOriginalConfig()"
+              [disabled]="linux"
+            >
+              Hard Reset
+            </button>
+            <button
+              class="btn btn-outline-warning btn-sm"
+              (click)="resetToCurrentConfig()"
+              [disabled]="linux"
+            >
+              Soft Reset
+            </button>
+            <button
+              class="btn btn-outline-success btn-sm"
+              (click)="exportConfigJSON()"
+              [disabled]="linux"
+            >
+              Apply Remap
+            </button>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <!-- Configuration Table View -->
+    <div class="col-12" data-bs-theme="dark">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-transparent border-0 pt-3">
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <!-- Legend -->
+              <table
+                class="table table-hover text-white table-sm mb-0"
+                data-bs-theme="dark"
+              >
+                <thead
+                  class="sticky-top"
+                  style="background: rgba(33, 37, 41, 0.95)"
+                >
+                  <tr>
+                    <th class="text-center fw-normal py-3">Index</th>
+                    <th class="text-center fw-normal py-3">Original Key</th>
+                    <th class="text-center fw-normal py-3">Left Ctrl</th>
+                    <th class="text-center fw-normal py-3">Left Alt</th>
+                    <th class="text-center fw-normal py-3">Search</th>
+                    <th class="text-center fw-normal py-3">Assistant</th>
+                    <th class="text-center fw-normal py-3">Left Shift</th>
+                    <th class="text-center fw-normal py-3">Right Ctrl</th>
+                    <th class="text-center fw-normal py-3">Right Alt</th>
+                    <th class="text-center fw-normal py-3">Right Shift</th>
+                    <th class="text-center fw-normal py-3">Vivaldi→Fn</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (config of current_remap; track config.index) {
+                  <tr class="border-bottom border-secondary">
+                    <!-- Index -->
+                    <td
+                      class="text-center align-middle py-3"
+                      data-bs-theme="dark"
+                    >
+                      <span class="fw-normal">{{ config.index }}</span>
+                    </td>
+
+                    <!-- Original Key -->
+                    <td
+                      class="text-center align-middle py-3"
+                      data-bs-theme="dark"
+                    >
+                      <span class="text-white fw-normal">{{
+                        config.original_key.make_code_hex
+                      }}</span>
+                    </td>
+
+                    <!-- Modifier Fields -->
+                    @for (field of modifierFields; track field) {
+                    <td
+                      class="text-center align-middle p-2"
+                      data-bs-theme="dark"
+                    >
+                      @if (isEditingCell(config.index, field)) {
+                      <div
+                        class="d-flex gap-1 align-items-center justify-content-center"
+                      >
+                        <select
+                          class="form-select form-select-sm border-secondary"
+                          [value]="$any(config)[field]"
+                          (change)="
+                            updateConfigField(
+                              config.index,
+                              field,
+                              $any($event.target).value
+                            )
+                          "
+                          style="min-width: 120px"
+                        >
+                          @for (option of keyStateOptions; track option) {
+                          <option [value]="option">{{ option }}</option>
+                          }
+                        </select>
+                        <button
+                          class="btn btn-sm btn-outline-secondary"
+                          (click)="cancelEditCell()"
+                          type="button"
+                          [disabled]="linux"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                      } @else {
+                      <div
+                        class="d-flex justify-content-between align-items-center px-2 py-1 rounded"
+                        (click)="startEditCell(config.index, field)"
+                        style="cursor: pointer; transition: all 0.2s"
+                        onmouseover="this.style.backgroundColor='rgba(255,255,255,0.05)'"
+                        onmouseout="this.style.backgroundColor='transparent'"
+                      >
+                        <span
+                          [class]="getCellClass($any(config)[field])"
+                          class="fw-normal"
+                        >
+                          {{ $any(config)[field] }}
+                        </span>
+                        <small class="text-white opacity-75">✎</small>
+                      </div>
+                      }
+                    </td>
+                    }
+
+                    <!-- Remap Vivaldi to Fn -->
+                    <td
+                      class="text-center align-middle p-2"
+                      data-bs-theme="dark"
+                    >
+                      @if (isEditingCell(config.index, 'remap_vivaldi_to_fn')) {
+                      <div
+                        class="d-flex gap-1 align-items-center justify-content-center"
+                      >
+                        <select
+                          class="form-select form-select-sm border-secondary"
+                          [value]="config.remap_vivaldi_to_fn"
+                          (change)="
+                            updateConfigField(
+                              config.index,
+                              'remap_vivaldi_to_fn',
+                              $any($event.target).value
+                            )
+                          "
+                          style="min-width: 80px"
+                        >
+                          <option value="true">True</option>
+                          <option value="false">False</option>
+                        </select>
+                        <button
+                          class="btn btn-sm btn-outline-secondary"
+                          (click)="cancelEditCell()"
+                          type="button"
+                          [disabled]="linux"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                      } @else {
+                      <div
+                        class="d-flex justify-content-between align-items-center px-2 py-1 rounded"
+                        (click)="
+                          startEditCell(config.index, 'remap_vivaldi_to_fn')
+                        "
+                        style="cursor: pointer; transition: all 0.2s"
+                        onmouseover="this.style.backgroundColor='rgba(255,255,255,0.05)'"
+                        onmouseout="this.style.backgroundColor='transparent'"
+                      >
+                        <span
+                          [class]="
+                            config.remap_vivaldi_to_fn
+                              ? 'text-success fw-semibold'
+                              : 'text-danger fw-semibold'
+                          "
+                          class="fw-normal"
+                        >
+                          {{ config.remap_vivaldi_to_fn }}
+                        </span>
+                        <small class="text-white">✎</small>
+                      </div>
+                      }
+                    </td>
+                  </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

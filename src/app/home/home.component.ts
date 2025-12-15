@@ -1,15 +1,12 @@
-import { Component } from "@angular/core";
+import { ChangeDetectorRef, Component } from "@angular/core";
 import { FanSectionComponent } from "./fan-section/fan-section.component";
 import { KeyboardSectionComponent } from "./keyboard-section/keyboard-section.component";
 import { ActivityLightSectionComponent } from "./activity-light-section/activity-light-section.component";
 import { ExtraSectionComponent } from "./extra-section/extra-section.component";
 import { invoke } from "@tauri-apps/api/core";
-import { ElementRef, ViewChild } from '@angular/core';
-import { getCurrentWindow } from '@tauri-apps/api/window';
-import { LogicalSize } from '@tauri-apps/api/dpi';
-
-
-
+import { ElementRef, ViewChild } from "@angular/core";
+import { getCurrentWindow } from "@tauri-apps/api/window";
+import { LogicalSize } from "@tauri-apps/api/dpi";
 
 @Component({
   selector: "app-home",
@@ -20,26 +17,27 @@ import { LogicalSize } from '@tauri-apps/api/dpi';
     ExtraSectionComponent,
   ],
   templateUrl: "./home.component.html",
-  styleUrl: "./home.component.scss"
+  styleUrl: "./home.component.scss",
 })
 export class HomeComponent {
-
   class: string = " ";
   open: number = 0;
 
-  @ViewChild('container') containerRef!: ElementRef;
-
+  @ViewChild("container") containerRef!: ElementRef;
+  constructor(private cdr: ChangeDetectorRef) {}
 
   private resizeWindowToContent() {
-    let el = this.containerRef.nativeElement as HTMLElement;
-    let rect = el.getBoundingClientRect();
+    setTimeout(() => {
+      let el = this.containerRef.nativeElement as HTMLElement;
+      let rect = el.getBoundingClientRect();
 
-    let width = Math.ceil(rect.width);
-    let height = Math.ceil(rect.height); // Add padding for window decorations
+      let width = Math.ceil(rect.width);
+      let height = Math.ceil(rect.height); // Add padding for window decorations
 
-    let appWindow = getCurrentWindow();
-    let size = new LogicalSize(width, height);
-    appWindow.setSize(size);
+      let appWindow = getCurrentWindow();
+      let size = new LogicalSize(width, height);
+      appWindow.setSize(size);
+    }, 2000);
   }
 
   ngOnInit() {
@@ -51,14 +49,12 @@ export class HomeComponent {
       }).then((event: any) => {
         let output = event.toLowerCase().trim();
         if (output == "ec says hello!") {
-          this.class = "displaynone"
+          this.class = "displaynone";
+          this.cdr.detectChanges();
         }
       });
-    })
-    setTimeout(() => {
-      this.resizeWindowToContent();
-    }, 1500)
-
+    });
+    this.resizeWindowToContent();
     invoke("os").then((os) => {
       if (typeof os === "string") {
         if (os != "linux") {
@@ -73,12 +69,7 @@ export class HomeComponent {
             }
           });
         }
-        this.resizeWindowToContent()
       }
-    })
-
+    });
   }
-
-
-
 }

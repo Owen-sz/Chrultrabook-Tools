@@ -1,0 +1,175 @@
+import { Component } from "@angular/core";
+import { ChangeDetectorRef } from "@angular/core";
+import { invoke } from "@tauri-apps/api/core";
+
+interface RemapConfigKey {
+  make_code: number;
+  make_code_hex: string;
+  flags: number;
+  flags_decoded?: string[];
+}
+
+interface RemapConfig {
+  index: number;
+  left_ctrl: string;
+  left_alt: string;
+  search: string;
+  assistant: string;
+  left_shift: string;
+  right_ctrl: string;
+  right_alt: string;
+  right_shift: string;
+  original_key: RemapConfigKey;
+  remap_vivaldi_to_fn: boolean;
+  remapped_key?: RemapConfigKey | null;
+  additional_keys?: RemapConfigKey[];
+}
+
+interface ConfigFileJson {
+  magic: string;
+  magic_hex: string;
+  valid: boolean;
+  remappings: number;
+  flip_search_and_assistant_on_pixelbook: boolean;
+  has_assistant_key: string;
+  is_non_chrome_ec: string;
+  file_size_bytes: number;
+  expected_size_bytes: number;
+  configs: RemapConfig[];
+}
+
+@Component({
+  selector: "app-keyboard-remap",
+  imports: [],
+  templateUrl: "./keyboard-remap.component.html",
+  styleUrl: "./keyboard-remap.component.scss",
+})
+export class KeyboardRemapComponent {
+  constructor(private cdr: ChangeDetectorRef) {}
+
+  // Remap mode
+  remapMode: boolean = false;
+  current_remap: RemapConfig[] = [];
+  fullConfig: ConfigFileJson | null = null;
+  linux: boolean = true;
+
+  // Table view state
+  showTableView: boolean = true;
+  editingCell: { rowIndex: number; field: string } | null = null;
+
+  // Valid options from Rust code
+  keyStateOptions = ["NoDetect", "Enforce", "EnforceNot"];
+  modifierFields = [
+    "left_ctrl",
+    "left_alt",
+    "search",
+    "assistant",
+    "left_shift",
+    "right_ctrl",
+    "right_alt",
+    "right_shift",
+  ];
+
+  ngOnInit() {
+    invoke("os").then((os) => {
+      if (typeof os == "string") {
+        if (os != "linux") {
+          this.linux = false;
+          this.cdr.detectChanges();
+          this.getRemappedKeys(false);
+        }
+      }
+    });
+  }
+
+  getRemappedKeys(type: boolean) {
+    if (this.current_remap.length === 0) {
+      // Only fetch if not already loaded
+      invoke<string>("get_remap_json", { hardReset: type })
+        .then((event) => {
+          if (typeof event === "string") {
+            const parsedConfig: ConfigFileJson = JSON.parse(event);
+            this.fullConfig = parsedConfig;
+            this.current_remap = parsedConfig.configs;
+            console.log("Loaded config:", this.current_remap);
+            this.cdr.detectChanges();
+          }
+        })
+        .catch((error) => {
+          console.error("Failed to load config:", error);
+        });
+    }
+    return this.current_remap;
+  }
+  // Table editing methods
+  startEditCell(rowIndex: number, field: string): void {
+    this.editingCell = { rowIndex, field };
+  }
+
+  cancelEditCell(): void {
+    this.editingCell = null;
+  }
+
+  isEditingCell(rowIndex: number, field: string): boolean {
+    return (
+      this.editingCell?.rowIndex === rowIndex &&
+      this.editingCell?.field === field
+    );
+  }
+
+  updateConfigField(rowIndex: number, field: string, value: string): void {
+    if (rowIndex < this.current_remap.length) {
+      if (field === "remap_vivaldi_to_fn") {
+        this.current_remap[rowIndex][field] = value === "true";
+      } else {
+        (this.current_remap[rowIndex] as any)[field] = value;
+      }
+      this.editingCell = null;
+      this.cdr.detectChanges();
+    }
+  }
+
+  resetToCurrentConfig(): void {
+    if (confirm("Reset all keys to previous save state?")) {
+      this.fullConfig = null;
+      this.current_remap = [];
+      this.getRemappedKeys(false);
+      this.cdr.detectChanges();
+    }
+  }
+
+  resetToOriginalConfig(): void {
+    if (confirm("Reset all keys to original remap state?")) {
+      this.fullConfig = null;
+      this.current_remap = [];
+      this.getRemappedKeys(true);
+      this.cdr.detectChanges();
+    }
+  }
+
+  exportConfigJSON(): void {
+    if (!this.fullConfig) {
+      console.error("No config loaded");
+      return;
+    }
+
+    const updatedConfig: ConfigFileJson = {
+      ...this.fullConfig,
+      remappings: this.current_remap.length,
+      configs: this.current_remap,
+    };
+
+    const jsonString = JSON.stringify(updatedConfig);
+
+    console.log("Exporting config with", this.current_remap.length, "entries");
+
+    invoke<boolean>("set_remap", { params: jsonString });
+  }
+
+  getCellClass(value: any): any {
+    if (value === "NoDetect") return "text-white";
+    if (value === "Enforce") return "text-success fw-semibold";
+    if (value === "EnforceNot") return "text-danger fw-semibold";
+    return "text-white fw-bold";
+  }
+}

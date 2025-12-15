@@ -1,4 +1,4 @@
-import { Component, ViewChild, inject, OnInit } from "@angular/core";
+import { Component, ViewChild, inject, OnInit, ChangeDetectorRef } from "@angular/core";
 import { FanService } from "../../services/fan.service";
 import { profile } from "../../services/profiles";
 
@@ -11,7 +11,7 @@ import { invoke } from "@tauri-apps/api/core";
   selector: "app-fan-curves",
   imports: [BaseChartDirective],
   templateUrl: "./fan-curves.component.html",
-  styleUrl: "./fan-curves.component.scss"
+  styleUrl: "./fan-curves.component.scss",
 })
 export class FanCurvesComponent implements OnInit {
   mode_value: string = " ";
@@ -19,17 +19,18 @@ export class FanCurvesComponent implements OnInit {
   profiles: profile[] = [];
   fan_service: FanService = inject(FanService);
 
-  constructor() {
+  constructor(private cdr: ChangeDetectorRef) {
     setTimeout(() => {
       this.profiles = this.fan_service.getProfiles();
       console.log(this.profiles);
       setTimeout(() => {
         this.fan_profiles();
+        this.cdr.detectChanges();
       });
     }, 550);
 
     this.fan_service.getIndex.subscribe(
-      (index) => (this.selected_mode = index),
+      (index) => (this.selected_mode = index)
     );
   }
 
@@ -49,9 +50,9 @@ export class FanCurvesComponent implements OnInit {
   save() {
     this.fan_service.editFanCurves(
       this.fan_service.getProfileIndexByName(
-        (document.getElementById("selector") as HTMLInputElement).value,
+        (document.getElementById("selector") as HTMLInputElement).value
       ),
-      this.lineChartData.datasets[0].data,
+      this.lineChartData.datasets[0].data
     );
   }
   saveAndApply() {

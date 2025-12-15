@@ -8,12 +8,12 @@ on:
   workflow_dispatch:
 
 env:
-  ubuntu-deps: "dpkg-dev fakeroot libwebkit2gtk-4.1-0 libwebkit2gtk-4.1-dev libjavascriptcoregtk-4.1-0 libjavascriptcoregtk-4.1-dev gir1.2-javascriptcoregtk-4.1 gir1.2-webkit2-4.1 build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev desktop-file-utils libudev-dev rpm"
+  ubuntu-deps: "dpkg-dev fakeroot libwebkit2gtk-4.1-0 libwebkit2gtk-4.1-dev libjavascriptcoregtk-4.1-0 libjavascriptcoregtk-4.1-dev gir1.2-javascriptcoregtk-4.1 gir1.2-webkit2-4.1 build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev desktop-file-utils libudev-dev rpm libgtk-3-dev"
 
 jobs:
   cargo-tests:
     name: Cargo Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -51,14 +51,14 @@ jobs:
       - name: Run Cargo:test
         run: cargo test --manifest-path src-tauri/Cargo.toml --verbose --all-features
   build:
-    name: Build 
+    name: Build
     strategy:
       fail-fast: false
       matrix:
-        platform: 
-          - ubuntu-latest
+        platform:
+          - ubuntu-22.04
           - windows-2022
-          - macos-13
+          - macos-15-intel
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v5
@@ -70,7 +70,7 @@ jobs:
       - name: Install Rust Stable
         uses: dtolnay/rust-toolchain@stable
       - name: Install OS dependencies
-        if: matrix.platform == 'ubuntu-latest'
+        if: matrix.platform == 'ubuntu-22.04'
         run: |
           sudo apt-get update
           sudo apt-get install -y ${{ env.ubuntu-deps }}
@@ -78,3 +78,37 @@ jobs:
         run: npm install
       - name: Build
         run: npm run tauri build
+  nix-check:
+    name: Nix Flake Checks
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: docker/setup-qemu-action@v3
+      - uses: DeterminateSystems/nix-installer-action@v19
+        with:
+          extra-conf: |
+            extra-platforms = aarch64-linux x86_64-darwin
+      - uses: actions/checkout@v5
+      - name: Run nix flake check
+        run: nix flake check --all-systems
+  nix-build:
+    name: Nix Build
+    needs: nix-check
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - nix: aarch64-linux
+            runner: ubuntu-24.04-arm
+          - nix: x86_64-linux
+            runner: ubuntu-24.04
+          - nix: x86_64-darwin
+            runner: macos-13
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: DeterminateSystems/nix-installer-action@v19
+      - uses: cachix/cachix-action@v16
+        with:
+          name: death7654
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+      - run: nix build -L .

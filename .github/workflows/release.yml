@@ -7,7 +7,7 @@ permissions:
   contents: write
 
 env:
-  ubuntu-deps: "dpkg-dev fakeroot libwebkit2gtk-4.1-0 libwebkit2gtk-4.1-dev libjavascriptcoregtk-4.1-0 libjavascriptcoregtk-4.1-dev gir1.2-javascriptcoregtk-4.1 gir1.2-webkit2-4.1 build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev desktop-file-utils libudev-dev rpm"
+  ubuntu-deps: "dpkg-dev fakeroot libwebkit2gtk-4.1-0 libwebkit2gtk-4.1-dev libjavascriptcoregtk-4.1-0 libjavascriptcoregtk-4.1-dev gir1.2-javascriptcoregtk-4.1 gir1.2-webkit2-4.1 build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev desktop-file-utils libudev-dev rpm libgtk-3-dev"
 
 jobs:
   release:
@@ -16,9 +16,9 @@ jobs:
       fail-fast: false
       matrix:
         platform: 
-          - ubuntu-latest
+          - ubuntu-22.04
           - windows-2022
-          - macos-13
+          - macos-15-intel
     runs-on: ${{ matrix.platform }}
 
     steps:
@@ -43,7 +43,7 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-cargo-
       - name: Install OS dependencies
-        if: matrix.platform == 'ubuntu-latest'
+        if: matrix.platform == 'ubuntu-22.04'
         run: |
           sudo apt-get update
           sudo apt-get install -y ${{ env.ubuntu-deps }}
@@ -54,7 +54,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Arch Linux Package
-        if: matrix.platform == 'ubuntu-latest'
+        if: matrix.platform == 'ubuntu-22.04'
         run: |
           docker run --rm -v "${{ github.workspace }}:/work" -w /work archlinux:base-devel bash -c "
           pacman -Syu --noconfirm  &&
@@ -79,7 +79,7 @@ jobs:
 
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: Chrultrabook-Tools-${{ matrix.platform }}
           retention-days: 30

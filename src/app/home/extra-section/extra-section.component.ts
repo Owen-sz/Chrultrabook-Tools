@@ -5,7 +5,7 @@ import { invoke } from "@tauri-apps/api/core";
   selector: "app-extra-section",
   imports: [],
   templateUrl: "./extra-section.component.html",
-  styleUrl: "./extra-section.component.scss"
+  styleUrl: "./extra-section.component.scss",
 })
 export class ExtraSectionComponent {
   zoom: number = 1;
@@ -18,16 +18,42 @@ export class ExtraSectionComponent {
       if (typeof percentage === "string") {
         const number = Number(percentage) / 100;
         this.zoom = number;
-        console.log(this.zoom)
+        console.log(this.zoom);
       }
     });
   }
   diagnostic() {
-    console.log("diag");
-    invoke("open_window", { name: "Diagnostics", width: 760.0, height: 510.0, zoom: this.zoom });
+    invoke("open_window", {
+      name: "Diagnostics",
+      width: 760.0,
+      height: 510.0,
+      zoom: this.zoom,
+    });
   }
   settings() {
-    console.log("settings");
-    invoke("open_window", { name: "Settings", width: 600.0, height: 450.0, zoom: this.zoom });
+    invoke("open_window", {
+      name: "Settings",
+      width: 600.0,
+      height: 450.0,
+      zoom: this.zoom,
+    });
+  }
+  keyboard()
+  {
+    invoke("open_window", {
+      name: "Keyboard_extra",
+      width: 660.0,
+      height: 410.0,
+      zoom: this.zoom,
+    });
+  }
+  battery()
+  {
+    invoke("open_window", {
+      name: "Battery",
+      width: 700.0,
+      height: 350.0,
+      zoom: this.zoom,
+    });
   }
 }

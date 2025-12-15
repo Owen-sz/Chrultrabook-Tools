@@ -5,16 +5,17 @@ import { invoke } from "@tauri-apps/api/core";
   selector: "app-diagnostics",
   imports: [],
   templateUrl: "./diagnostics.component.html",
-  styleUrl: "./diagnostics.component.scss"
+  styleUrl: "./diagnostics.component.scss",
 })
 export class DiagnosticsComponent implements OnInit {
   collected_info: string = "";
   selected_function: string = "";
   disabled: boolean = false;
   ectools: boolean = false;
+  
 
   ngOnInit() {
-    invoke("os").then(os => {
+    invoke("os").then((os) => {
       if (os == "macOS") {
         this.disabled = true;
       }
@@ -22,7 +23,7 @@ export class DiagnosticsComponent implements OnInit {
     invoke("execute", {
       program: "ectool",
       arguments: ["hello"],
-      reply: true
+      reply: true,
     }).then((event: any) => {
       let output = event.toLowerCase().trim();
       console.log(output);
@@ -35,12 +36,9 @@ export class DiagnosticsComponent implements OnInit {
     invoke("execute", {
       program: "cbmem",
       arguments: ["-v"],
-      reply: true
+      reply: true,
     }).then((event: any) => {
-      let output = event
-        .toLowerCase()
-        .trim()
-        .split(" ");
+      let output = event.toLowerCase().trim().split(" ");
       if (output[0] !== "cbmem") {
         this.disabled = true;
         if (this.ectools == true) {
@@ -53,12 +51,12 @@ export class DiagnosticsComponent implements OnInit {
   }
 
   async select() {
-    this.selected_function = (document.getElementById(
-      "diagnostic_dropdown"
-    ) as HTMLInputElement).value;
+    this.selected_function = (
+      document.getElementById("diagnostic_dropdown") as HTMLInputElement
+    ).value;
     if (this.selected_function !== "Select") {
       this.collected_info = await invoke("diagnostics", {
-        selected: this.selected_function
+        selected: this.selected_function,
       });
     }
   }
@@ -70,7 +68,7 @@ export class DiagnosticsComponent implements OnInit {
   save() {
     invoke("save", {
       filename: this.selected_function,
-      content: this.collected_info
+      content: this.collected_info,
     });
   }
 }
