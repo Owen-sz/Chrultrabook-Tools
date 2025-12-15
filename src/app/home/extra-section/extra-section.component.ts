@@ -51,8 +51,8 @@ export class ExtraSectionComponent {
   {
     invoke("open_window", {
       name: "Battery",
-      width: 900.0,
-      height: 410.0,
+      width: 700.0,
+      height: 350.0,
       zoom: this.zoom,
     });
   }

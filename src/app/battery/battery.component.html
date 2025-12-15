@@ -15,29 +15,20 @@
   </div>
   <div class="row">
     <div class="col-2">
-      <label for="lowerchargecontrol" class="col-form-label"
+      <label for="chargecontrol" class="col-form-label"
         >Charge Control</label
       >
     </div>
-    <div class="col-4">
+    <div class="col-7">
       <input
         type="number"
-        id="lowerchargecontrol"
-        class="form-control"
-        placeholder="Lower Value"
+        id="chargecontrol"
+        class="form-control m-0 w-100 h-100"
+        placeholder="Value"
         [disabled]="oldec"
       />
     </div>
-    <div class="col-4">
-      <input
-        type="number"
-        id="upperchargecontrol"
-        class="form-control"
-        placeholder="Upper Value"
-        [disabled]="oldec"
-      />
-    </div>
-    <div class="col-2">
+    <div class="col-3">
       <button
         type="button"
         class="btn btn-outline-secondary border-0 fs-4 w-100 h-100"
@@ -52,7 +43,7 @@
     <div class="col-2">
       <label for="batterymode" class="col-form-label">Set Battery Mode</label>
     </div>
-    <div class="col-4">
+    <div class="col-7">
         <select
           class="form-select text-white border-0 fs-4 bg-secondary rounded-1 w-100 h-100"
           id="mode_battery"
@@ -66,8 +57,7 @@
         
         </select>
     </div>
-    <div class="col-4"></div>
-    <div class="col-2">
+    <div class="col-3">
       <button
         type="button"
         class="btn btn-outline-secondary border-0 fs-4 w-100 h-100"
@@ -79,18 +69,17 @@
   </div>
   <div class="row pt-3">
     <div class="col-2">
-      <label for="batterymode" class="col-form-label">Max Battery Charge Current</label>
+      <label for="batterymode" class="col-form-label">Battery Current Limit</label>
     </div>
-    <div class="col-4">
+    <div class="col-7">
       <input
         type="number"
         id="maxcurrent"
-        class="form-control"
+        class="form-control m-0 h-100 w-100"
         placeholder="Value in mA"
       />
     </div>
-    <div class="col-4"></div>
-    <div class="col-2">
+    <div class="col-3">
       <button
         type="button"
         class="btn btn-outline-secondary border-0 fs-4 w-100 h-100"

@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { invoke } from '@tauri-apps/api/core';
+import { toInteger } from 'lodash';
 
 @Component({
   selector: 'app-battery',
@@ -39,17 +40,21 @@ export class BatteryComponent {
 
   apply_limits()
   {
-    let lower_charge = (
-      document.getElementById("lowerchargecontrol") as HTMLInputElement
+    let charge = (
+      document.getElementById("chargecontrol") as HTMLInputElement
     ).value;
 
-    let upper_charge = (
-      document.getElementById("upperchargecontrol") as HTMLInputElement
-    ).value;
+    let charge_int = toInteger(charge);
+    if(charge_int > 100)
+    {
+      charge_int = 100;
+    }
+
+    let lower_charge = toInteger(charge_int) - 5;
 
     invoke("execute", {
       program: "ectool",
-      arguments: ["chargecontrol", "normal", lower_charge,upper_charge],
+      arguments: ["chargecontrol", "normal", lower_charge, charge_int],
       reply: true,
     }).then((event) => {
       //console.log(event)
