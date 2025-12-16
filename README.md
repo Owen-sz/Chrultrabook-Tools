@@ -97,7 +97,9 @@ pacman -U ~/Downloads/chrultrabook-tools-VERSION-pkg.tar.zst
 (Replace the VERSION with the latest version, and the file location, if needed.)
 
 #### Build from Source
-- run `npm run tauri dev`.
+- cd into `src-tauri`
+- run `npm install`
+- run `npm run tauri dev`
 
 ### Windows
 
