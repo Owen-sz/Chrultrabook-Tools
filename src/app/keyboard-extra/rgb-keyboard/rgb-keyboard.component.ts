@@ -629,11 +629,15 @@ export class RgbKeyboardComponent implements OnDestroy {
   }
 
   public apply() {
+    console.log('apply')
     if (this._rgbMode === "off") {
       invoke("execute", {
         program: "ectool",
         arguments: ["rgbkbd", "demo", "0"],
-        reply: false,
+        reply: true,
+      }).then((event) =>
+      {
+        console.log(event)
       });
     }
 
@@ -642,7 +646,10 @@ export class RgbKeyboardComponent implements OnDestroy {
       invoke("execute", {
         program: "ectool",
         arguments: ["rgbkbd", "clear", cmd_hex],
-        reply: false,
+        reply: true,
+      }).then((event) =>
+      {
+        console.log(event)
       });
     }
 
@@ -650,16 +657,22 @@ export class RgbKeyboardComponent implements OnDestroy {
       invoke("execute", {
         program: "ectool",
         arguments: ["rgbkbd", "demo", "1"],
-        reply: false,
-      });
+        reply: true,
+      }).then((event) =>
+      {
+        console.log(event)
+      });;
     }
 
     if (this._rgbMode == "dot") {
       invoke("execute", {
         program: "ectool",
         arguments: ["rgbkbd", "demo", "2"],
-        reply: false,
-      });
+        reply: true,
+      }).then((event) =>
+      {
+        console.log(event)
+      });;
     }
   }
 
