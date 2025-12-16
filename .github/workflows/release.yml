@@ -52,9 +52,10 @@ jobs:
       - name: Setup Windows Build Enviornment
         if: matrix.platform == 'windows-2022'
         run: |
-            mkdir %GITHUB_WORKSPACE%\src-tauri\build
-            copy %GITHUB_WORKSPACE%\LICENSE %GITHUB_WORKSPACE%\src-tauri\build
-            copy %GITHUB_WORKSPACE%\README.md %GITHUB_WORKSPACE%\src-tauri\build
+          mkdir $env:GITHUB_WORKSPACE\src-tauri\build
+          copy $env:GITHUB_WORKSPACE\LICENSE $env:GITHUB_WORKSPACE\src-tauri\build
+          copy $env:GITHUB_WORKSPACE\README.md $env:GITHUB_WORKSPACE\src-tauri\build
+        shell: powershell
       - name: Setup macOS and Linux Build Environment
         if: matrix.platform == 'ubuntu-22.04' || matrix.platform == 'macos-15-intel'
         run: |
