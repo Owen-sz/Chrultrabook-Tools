@@ -16,6 +16,7 @@
       "icons/icon.ico"
     ],
     "licenseFile": "./build/LICENSE",
+    "license": "GPL-3.0",
     "linux": {
       "deb": {
         "depends": ["chromium-ectool", "cbmem", "policykit-1"],
