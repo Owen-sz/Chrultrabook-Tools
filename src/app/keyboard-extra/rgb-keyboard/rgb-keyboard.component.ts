@@ -221,9 +221,9 @@ export class RgbKeyboardComponent implements OnDestroy {
       return;
     }
 
-    if (this._rgbMode === "custom" && this.rgbEnabled) {
-      this.selectedProfileId = "off";
-      this.rgbEnabled = false;
+    if (this._rgbMode === "custom") {
+      this.rgbEnabled = true;
+      this.options_enabled = true;
     }
 
     if (this._rgbMode === "off") {
