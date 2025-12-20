@@ -642,12 +642,18 @@ export class RgbKeyboardComponent implements OnDestroy {
     }
 
     if (this._rgbMode == "static") {
-      let cmd_hex = "0x" + this.hexCodeInput;
+      let hex = this.hexCodeInput.trim();
+      const r = parseInt(hex.slice(0, 2), 16);
+      const g = parseInt(hex.slice(2, 4), 16);
+      const b = parseInt(hex.slice(4, 6), 16);
+
+      const packedColor = (r << 16) | (g << 8) | b;
+
       invoke("execute", {
         program: "ectool",
-        arguments: ["rgbkbd", "clear", cmd_hex],
+        arguments: ["rgbkbd", "clear", packedColor],
         reply: true,
-      }).then((event) =>
+      }).then((event: any) =>
       {
         console.log(event)
       });
