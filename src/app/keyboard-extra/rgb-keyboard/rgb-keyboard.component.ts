@@ -194,7 +194,6 @@ export class RgbKeyboardComponent implements OnDestroy {
     return this._rgbEnabled;
   }
   set rgbEnabled(value: boolean) {
-    
     this._rgbEnabled = value;
     if (this._rgbEnabled && this.rgbMode === "custom") {
       this.startColorCycle();
@@ -226,10 +225,10 @@ export class RgbKeyboardComponent implements OnDestroy {
       this.selectedProfileId = "off";
       this.rgbEnabled = false;
     }
-    
-   if (this._rgbMode === "off") {
+
+    if (this._rgbMode === "off") {
       this.rgbEnabled = false;
-      this.options_enabled = false;
+      this.options_enabled = true;
     }
 
     if (this._rgbMode == "flow") {
@@ -629,33 +628,40 @@ export class RgbKeyboardComponent implements OnDestroy {
   }
 
   public apply() {
-    console.log('apply')
+    console.log("apply");
     if (this._rgbMode === "off") {
       invoke("execute", {
         program: "ectool",
         arguments: ["rgbkbd", "demo", "0"],
         reply: true,
-      }).then((event) =>
-      {
-        console.log(event)
+      }).then((event) => {
+        console.log(event);
       });
     }
 
-    if (this._rgbMode == "static") {
+    if (this._rgbMode === "static") {
       let hex = this.hexCodeInput.trim();
-      const r = parseInt(hex.slice(0, 2), 16);
-      const g = parseInt(hex.slice(2, 4), 16);
-      const b = parseInt(hex.slice(4, 6), 16);
 
-      const packedColor = (r << 16) | (g << 8) | b;
+      // Normalize input: remove '#' if present
+      if (hex.startsWith("#")) {
+        hex = hex.slice(1);
+      }
+
+      // Validate hex
+      if (!/^[0-9A-Fa-f]{6}$/.test(hex)) {
+        console.error("Invalid hex color:", hex);
+        return;
+      }
+
+      const ectoolHex = ("0x" + hex.toLowerCase()).toString().trim();
+      console.log(ectoolHex);
 
       invoke("execute", {
         program: "ectool",
-        arguments: ["rgbkbd", "clear", packedColor],
+        arguments: ["rgbkbd", "clear", ectoolHex],
         reply: true,
-      }).then((event: any) =>
-      {
-        console.log(event)
+      }).then((event: any) => {
+        console.log(event);
       });
     }
 
@@ -664,10 +670,9 @@ export class RgbKeyboardComponent implements OnDestroy {
         program: "ectool",
         arguments: ["rgbkbd", "demo", "1"],
         reply: true,
-      }).then((event) =>
-      {
-        console.log(event)
-      });;
+      }).then((event) => {
+        console.log(event);
+      });
     }
 
     if (this._rgbMode == "dot") {
@@ -675,10 +680,9 @@ export class RgbKeyboardComponent implements OnDestroy {
         program: "ectool",
         arguments: ["rgbkbd", "demo", "2"],
         reply: true,
-      }).then((event) =>
-      {
-        console.log(event)
-      });;
+      }).then((event) => {
+        console.log(event);
+      });
     }
   }
 

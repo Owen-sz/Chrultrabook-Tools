@@ -205,20 +205,28 @@ export class KeyboardSectionComponent implements OnInit {
 
   update_rgb(hex_code: string) {
     let hex = hex_code.trim();
-      const r = parseInt(hex.slice(0, 2), 16);
-      const g = parseInt(hex.slice(2, 4), 16);
-      const b = parseInt(hex.slice(4, 6), 16);
 
-      const packedColor = (r << 16) | (g << 8) | b;
+    // Normalize input: remove '#' if present
+    if (hex.startsWith("#")) {
+      hex = hex.slice(1);
+    }
 
-      invoke("execute", {
-        program: "ectool",
-        arguments: ["rgbkbd", "clear", packedColor],
-        reply: true,
-      }).then((event: any) =>
-      {
-        console.log(event)
-      });
+    // Validate hex
+    if (!/^[0-9A-Fa-f]{6}$/.test(hex)) {
+      console.error("Invalid hex color:", hex);
+      return;
+    }
+
+    const ectoolHex = ("0x" + hex.toLowerCase()).toString().trim();
+    console.log(ectoolHex);
+
+    invoke("execute", {
+      program: "ectool",
+      arguments: ["rgbkbd", "clear", ectoolHex],
+      reply: true,
+    }).then((event: any) => {
+      console.log(event);
+    });
   }
 
   private updateColorTransition(): string | null {

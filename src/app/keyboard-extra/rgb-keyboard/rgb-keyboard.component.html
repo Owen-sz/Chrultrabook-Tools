@@ -188,7 +188,7 @@
           <button
             class="btn btn-outline-success w-100"
             (click)="apply()"
-            [disabled]="!rgbEnabled"
+            [disabled]="!rgbEnabled && !options_enabled"
           >
             Apply
           </button>
