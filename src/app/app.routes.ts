@@ -40,7 +40,7 @@ export const routes: Routes = [
   },
   {
     path: "Battery",
-    component: BatteryComponent
+    component: BatteryComponent,
   },
   {
     path: "Keyboard_extra",

@@ -271,7 +271,6 @@ export class RgbKeyboardComponent implements OnDestroy {
     }
   }
 
-
   get rgbColor(): string {
     return `rgb(${Math.round(this.rgbRed)}, ${Math.round(
       this.rgbGreen

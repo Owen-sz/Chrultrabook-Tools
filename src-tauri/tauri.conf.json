@@ -24,7 +24,8 @@
         "files": {
           "/usr/bin/chrultrabook-tools-root": "./linux/chrultrabook-tools-root",
           "/usr/share/polkit-1/actions/com.chrultrabook.tools.policy": "./linux/com.chrultrabook.tools.policy",
-          "/usr/share/doc/chrultrabook-tools/README.md": "./build/README.md"
+          "/usr/share/doc/chrultrabook-tools/README.md": "./build/README.md",
+          "/usr/share/licenses/chrultrabook-tools/LICENSE": "./build/LICENSE"
         }
       },
       "rpm": {
@@ -33,7 +34,8 @@
         "files": {
           "/usr/bin/chrultrabook-tools-root": "./linux/chrultrabook-tools-root",
           "/usr/share/polkit-1/actions/com.chrultrabook.tools.policy": "./linux/com.chrultrabook.tools.policy",
-          "/usr/share/doc/chrultrabook-tools/README.md": "./build/README.md"
+          "/usr/share/doc/chrultrabook-tools/README.md": "./build/README.md",
+          "/usr/share/licenses/chrultrabook-tools/LICENSE": "./build/LICENSE"
         }
       }
     }

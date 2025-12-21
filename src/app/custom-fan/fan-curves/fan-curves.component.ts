@@ -1,4 +1,11 @@
-import { Component, ViewChild, inject, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from "@angular/core";
+import {
+  Component,
+  ViewChild,
+  inject,
+  OnInit,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 import { FanService } from "../../services/fan.service";
 import { profile } from "../../services/profiles";
 
@@ -12,7 +19,7 @@ import { invoke } from "@tauri-apps/api/core";
   imports: [BaseChartDirective],
   templateUrl: "./fan-curves.component.html",
   styleUrl: "./fan-curves.component.scss",
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FanCurvesComponent implements OnInit {
   mode_value: string = " ";
@@ -22,54 +29,50 @@ export class FanCurvesComponent implements OnInit {
 
   constructor(private cdr: ChangeDetectorRef) {}
 
- ngOnInit() {
-  Chart.register(DragData);
+  ngOnInit() {
+    Chart.register(DragData);
 
-  this.fan_service.getIndex.subscribe(
-    (index) => {
+    this.fan_service.getIndex.subscribe((index) => {
       this.selected_mode = index;
       this.cdr.detectChanges();
-    }
-  );
+    });
 
-  setTimeout(() => {
-    this.profiles = this.fan_service.getProfiles();
-    console.log(this.profiles);
+    setTimeout(() => {
+      this.profiles = this.fan_service.getProfiles();
+      console.log(this.profiles);
 
-    if (this.profiles && this.profiles.length > 0) {
-      const defaultProfileName = this.profiles[0].name; 
-      
-      this.initializeChart(defaultProfileName); 
+      if (this.profiles && this.profiles.length > 0) {
+        const defaultProfileName = this.profiles[0].name;
 
-      (document.getElementById("selector") as HTMLInputElement).value = defaultProfileName;
-    }
-    
-    this.cdr.detectChanges();
+        this.initializeChart(defaultProfileName);
 
-  }, 600);
-}
+        (document.getElementById("selector") as HTMLInputElement).value =
+          defaultProfileName;
+      }
 
-initializeChart(profileName: string) {
+      this.cdr.detectChanges();
+    }, 600);
+  }
+
+  initializeChart(profileName: string) {
     const profileArray = this.fan_service.getProfileArrayByName(profileName);
 
     if (profileArray) {
-        this.lineChartData.datasets[0].data = profileArray.array;
-        this.mode_value = profileName;
+      this.lineChartData.datasets[0].data = profileArray.array;
+      this.mode_value = profileName;
 
-        
-        this.chart?.update(); 
+      this.chart?.update();
     } else {
-        console.warn(`Profile array not found for name: ${profileName}`);
+      console.warn(`Profile array not found for name: ${profileName}`);
     }
-}
+  }
 
+  fan_profiles() {
+    const profile = (document.getElementById("selector") as HTMLInputElement)
+      .value;
 
-fan_profiles() {
-    const profile = (document.getElementById("selector") as HTMLInputElement).value;
-    
-    this.initializeChart(profile); 
-    
-}
+    this.initializeChart(profile);
+  }
   save() {
     this.fan_service.editFanCurves(
       this.fan_service.getProfileIndexByName(

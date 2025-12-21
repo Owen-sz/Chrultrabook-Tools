@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, inject } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  HostListener,
+  inject,
+} from "@angular/core";
 import { FanService } from "../../services/fan.service";
 import { profile } from "../../services/profiles";
 
@@ -7,7 +13,7 @@ import { profile } from "../../services/profiles";
   imports: [],
   templateUrl: "./fan-profiles.component.html",
   styleUrl: "./fan-profiles.component.scss",
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FanProfilesComponent {
   edit: boolean = false;
@@ -16,7 +22,6 @@ export class FanProfilesComponent {
 
   profiles: profile[] = [];
   fan_service: FanService = inject(FanService);
-
 
   constructor(private cdr: ChangeDetectorRef) {
     setTimeout(() => {

@@ -12,7 +12,6 @@ export class DiagnosticsComponent implements OnInit {
   selected_function: string = "";
   disabled: boolean = false;
   ectools: boolean = false;
-  
 
   ngOnInit() {
     invoke("os").then((os) => {

@@ -535,10 +535,10 @@ pub fn read_config(hard_reset: bool) -> String {
         configs.push(config_entry);
     }
 
-    println!(
-        "Successfully read {} configuration entries",
-        configs_to_read
-    );
+    // println!(
+    //     "Successfully read {} configuration entries",
+    //     configs_to_read
+    // );
 
     // Create and write JSON output
     let json_output = ConfigFileJson {

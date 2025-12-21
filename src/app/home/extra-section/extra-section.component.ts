@@ -38,8 +38,7 @@ export class ExtraSectionComponent {
       zoom: this.zoom,
     });
   }
-  keyboard()
-  {
+  keyboard() {
     invoke("open_window", {
       name: "Keyboard_extra",
       width: 1100.0,
@@ -47,8 +46,7 @@ export class ExtraSectionComponent {
       zoom: this.zoom,
     });
   }
-  battery()
-  {
+  battery() {
     invoke("open_window", {
       name: "Battery",
       width: 700.0,
