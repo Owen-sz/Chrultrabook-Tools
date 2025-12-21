@@ -42,8 +42,8 @@ export class ExtraSectionComponent {
   {
     invoke("open_window", {
       name: "Keyboard_extra",
-      width: 660.0,
-      height: 410.0,
+      width: 1100.0,
+      height: 600.0,
       zoom: this.zoom,
     });
   }

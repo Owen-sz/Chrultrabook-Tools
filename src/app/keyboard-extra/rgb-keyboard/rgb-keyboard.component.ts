@@ -49,7 +49,7 @@ export class RgbKeyboardComponent implements OnDestroy {
   selectedKeyIndex: { row: number; col: number } | null = null;
   customCycleName: string = "My Custom Cycle";
 
-  options_enabled: boolean = false;
+  options_enabled: boolean = true;
 
   generatedConfigJson: string = "";
 
