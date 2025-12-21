@@ -134,9 +134,9 @@ Enable WMIC:
 
 ## Built Using
 
-- Tauri 2.0
-- Angular 19
-- Rust 1.83
+- Tauri 2.9.5
+- Angular 21
+- Rust 1.92
 - HTML5
 - CSS
 - TypeScript
