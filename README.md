@@ -10,32 +10,105 @@
 
 ## Features
 
-- CPU Temperature
+- CPU Temperature Monitoring
+- CPU Temperature Graph
+- Keyboard Remap (Windows)
+- RGB Keyboard Controls
 - Fan Speed Monitoring
 - Custom Fan Curves
 - Custom Fan Profiles
 - Fan Speed Graph
 - Custom Fan Profiles
-- CPU Temperature Graph
-- Start Application In System Tray
+- Start Application in System Tray
 - Start Application on System Boot
-- Start Custom Fan Profiles On System Boot
+- Start Custom Fan Profiles on System Boot
+- Start Custom RGB Profile on System Boot
+- Create Custom RGB Profiles
 - Change Keyboard Brightness
-- Change Activity Light Colors (On Select Chromebooks)
+- Change Activity Light Colors (on select Chromebooks)
 - System Diagnostics
-- Keyboard Backlight
-  
 
 ## Install Instructions
 
+### Linux
+
+#### Fedora and Derivatives
+
+Add the Terra repository (if using Ultramarine Linux, Terra is pre-installed). Instructions can be found [here](https://github.com/terrapkg/packages/blob/frawhide/README.md).
+
+Install Chrultrabook-Tools:
+
+```
+dnf install chrultrabook-tools
+```
+
+#### Debian and Derivatives
+
+##### Add the Chrultrabook Repository:
+1. download and save the repository signing key
+
+    ```
+    wget -O /usr/share/keyrings/chrultrabook-debian-archive-keyring.gpg https://chrultrabook.sakamoto.pl/repos/debian/chrultrabook-debian-pub.asc
+    ```
+
+2. Create a sources files in sources.list.d
+    ```
+    echo "
+    Types: deb
+    URIs: https://chrultrabook.sakamoto.pl/repos/debian/
+    Suites: stable
+    Components: main
+    Signed-By: /usr/share/keyrings/chrultrabook-debian-archive-keyring.gpg
+    " | sudo tee /etc/apt/sources.list.d/chrultrabook.sources > /dev/null
+    ```
+
+3. Run
+    ```
+    sudo apt-get update
+    ```
+
+##### Install ectool and cbmem
+
+  ```
+  sudo apt-get install cbmem chromium-ectool
+  ```
+
+##### Install Chrultrabook-Tools:
+1. ```cd``` to the directory with the .deb file
+2. run the following command with the correct version
+  ```
+  sudo apt install ./chrultrabook-tools_3.1.2_amd64.deb
+  ```
+
+#### Arch and derivatives
+
+install AUR dependencies (for this example we are using [paru](https://github.com/Morganamilo/paru):
+
+```
+paru -S chromium-ectool cbmem
+```
+
+Download the Arch package from the Releases page, then install:
+
+```
+pacman -U ~/Downloads/chrultrabook-tools-VERSION-pkg.tar.zst
+```
+
+(Replace the VERSION with the latest version, and the file location, if needed.)
+
+#### Build from Source
+- cd into `src-tauri`
+- run `npm install`
+- run `npm run tauri dev`
+
 ### Windows
 
-- Install Coolstar's Latest CROS-EC driver from [https://github.com/coolstar/driverinstallers/tree/master/crosec](https://github.com/coolstar/driverinstallers/tree/master/crosec)
+- Install Coolstar's latest CROS-EC driver from [https://github.com/coolstar/driverinstallers/tree/master/crosec](https://github.com/coolstar/driverinstallers/tree/master/crosec)
 - Download the MSI or EXE from the latest [release](https://github.com/death7654/Chrultrabook-Tools/releases)
-- Run the Installer
-- Open the Application
+- Run the installer
+- Open the application
 
-#### Windows 11 24H2 and Newer
+#### Windows 11 24H2 and newer
 - Enable WMIC
    - Open Settings
    - Navigate to `Optional Features`
@@ -43,22 +116,10 @@
    - Search and add `WMIC`
    - Reopen the application
 
-### Linux
-
-#### AppImage
-
-- Download the AppImage
-- `cd` to the directory
-- Mark the file as an executeable `chmod a+x name.AppImage`
-- open the AppImage `sudo ./name.AppImage`
-
-#### Non-AppImage
-- You must start the application as root as the ectool binary requires sudo privileges 
-
 ### macOS
 
 - Download the [ectool](https://github.com/1Revenger1/ectool) binary
-- Move the Binary to `/usr/bin` or `/usr/local/bin`
+- Move the binary to `/usr/bin` or `/usr/local/bin`
 - Download the installer with  `x86_64` in its name
 - Run the Chrultrabook Tools Installer
 - Drag the Chrultrabook Tools app into the Applications Folder
