@@ -4,9 +4,13 @@
 <img src="https://img.shields.io/github/forks/Death7654/Chrultrabook-Controller?style=social" alt="shields">&nbsp;&nbsp;
 <img src="https://img.shields.io/github/stars/Death7654/Chrultrabook-Controller?style=social" alt="shields">
 
-### Your Chrultrabook, Your Way
+---
 
-![image(2)](https://github.com/death7654/Chrultrabook-Tools/assets/72635727/1d5633e3-8b1e-4d0e-a3ba-096ed05675aa)
+## Your Chrultrabook, Your Way
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/7b4f3899-e3e8-45b4-ab0d-bc23b0cdf82b" />
+
+---
 
 ## Features
 
@@ -18,7 +22,6 @@
 - Custom Fan Curves
 - Custom Fan Profiles
 - Fan Speed Graph
-- Custom Fan Profiles
 - Start Application in System Tray
 - Start Application on System Boot
 - Start Custom Fan Profiles on System Boot
@@ -28,96 +31,106 @@
 - Change Activity Light Colors (on select Chromebooks)
 - System Diagnostics
 
+---
+
 ## Install Instructions
 
 ### Linux
 
-#### Fedora and Derivatives
+---
 
-Add the Terra repository (if using Ultramarine Linux, Terra is pre-installed). Instructions can be found [here](https://github.com/terrapkg/packages/blob/frawhide/README.md).
+### Fedora and Derivatives
+
+Add the Terra repository (if using Ultramarine Linux, Terra is pre-installed).  
+Instructions can be found [here](https://github.com/terrapkg/packages/blob/frawhide/README.md)
 
 Install Chrultrabook-Tools:
-
 ```
 dnf install chrultrabook-tools
 ```
+---
 
-#### Debian and Derivatives
+### Debian and Derivatives
 
-##### Add the Chrultrabook Repository:
-1. download and save the repository signing key
+#### Add the Chrultrabook Repository
 
-    ```
-    sudo wget https://chrultrabook.sakamoto.pl/repos/debian/chrultrabook-debian-pub.asc -O /etc/apt/trusted.gpg.d/chrultrabook-debian-archive-keyring.asc
-    ```
+1. Download and save the repository signing key:
+```
+sudo wget https://chrultrabook.sakamoto.pl/repos/debian/chrultrabook-debian-pub.asc -O /etc/apt/trusted.gpg.d/chrultrabook-debian-archive-keyring.asc
+```
+2. Download the source file to sources.list.d:
+```
+sudo wget https://chrultrabook.sakamoto.pl/repos/debian/chrultrabook.sources -O /etc/apt/sources.list.d/chrultrabook.sources
+```
+3. Update package lists:
+```
+sudo apt-get update
+```
+#### Install ectool and cbmem
+```
+sudo apt-get install cbmem chromium-ectool
+```
+#### Install Chrultrabook-Tools
 
-2. Download the source file to sources.list.d
-    ```
-    sudo wget https://chrultrabook.sakamoto.pl/repos/debian/chrultrabook.sources -O /etc/apt/sources.list.d/chrultrabook.sources
-    ```
+1. cd to the directory containing the .deb file  
+2. Run the following command with the correct version:
+```
+sudo apt install ./chrultrabook-tools_3.1.2_amd64.deb
+```
+---
 
-3. Run
-    ```
-    sudo apt-get update
-    ```
+### Arch and Derivatives
 
-##### Install ectool and cbmem
-
-  ```
-  sudo apt-get install cbmem chromium-ectool
-  ```
-
-##### Install Chrultrabook-Tools:
-1. ```cd``` to the directory with the .deb file
-2. run the following command with the correct version
-  ```
-  sudo apt install ./chrultrabook-tools_3.1.2_amd64.deb
-  ```
-
-#### Arch and derivatives
-
-install AUR dependencies (for this example we are using [paru](https://github.com/Morganamilo/paru):
-
+Install AUR dependencies (example uses [paru](https://github.com/Morganamilo/paru)):
 ```
 paru -S chromium-ectool cbmem
 ```
-
 Download the Arch package from the Releases page, then install:
-
 ```
 pacman -U ~/Downloads/chrultrabook-tools-VERSION-pkg.tar.zst
 ```
+Replace VERSION with the latest version and adjust the file path if needed.
 
-(Replace the VERSION with the latest version, and the file location, if needed.)
+---
 
-#### Build from Source
-- cd into `src-tauri`
-- run `npm install`
-- run `npm run tauri dev`
+### Build from Source
+```
+git clone https://github.com/death7654/Chrultrabook-Tools.git
+cd Chrultrabook-Tools
+npm install
+npm run tauri build
+```
+---
 
-### Windows
+## Windows
 
-- Install Coolstar's latest CROS-EC driver from [https://github.com/coolstar/driverinstallers/tree/master/crosec](https://github.com/coolstar/driverinstallers/tree/master/crosec)
+- Install Coolstar’s latest CROS-EC [driver](https://github.com/coolstar/driverinstallers/tree/master/crosec)
 - Download the MSI or EXE from the latest [release](https://github.com/death7654/Chrultrabook-Tools/releases)
 - Run the installer
 - Open the application
 
-#### Windows 11 24H2 and newer
-- Enable WMIC
-   - Open Settings
-   - Navigate to `Optional Features`
-   - Click `View Features`
-   - Search and add `WMIC`
-   - Reopen the application
+### Windows 11 24H2 and Newer
 
-### macOS
+Enable WMIC:
 
-- Download the [ectool](https://github.com/1Revenger1/ectool) binary
-- Move the binary to `/usr/bin` or `/usr/local/bin`
-- Download the installer with  `x86_64` in its name
+1. Open Settings
+2. Navigate to Optional Features
+3. Click View Features
+4. Search for and add WMIC
+5. Reopen the application
+
+---
+
+## macOS
+
+- Download the ectool [binary](https://github.com/1Revenger1/ectool)
+- Move the binary to /usr/bin or /usr/local/bin
+- Download the installer with x86_64 in its name
 - Run the Chrultrabook Tools Installer
-- Drag the Chrultrabook Tools app into the Applications Folder
+- Drag the Chrultrabook Tools app into the Applications folder
 - Open the app
+
+---
 
 ## Built Using
 
@@ -126,30 +139,43 @@ pacman -U ~/Downloads/chrultrabook-tools-VERSION-pkg.tar.zst
 - Rust 1.83
 - HTML5
 - CSS
-- TS
+- TypeScript
+
+---
 
 ## Authors
 
 👤 **Robinson Arysseril**
 
-- GitHub: [@death7654](https://github.com/death7654)
+- GitHub: https://github.com/death7654
+
+---
 
 ## 🤝 Contributing
 
-Contributions, issues and feature requests are welcome!
+Contributions, issues, and feature requests are welcome.
 
-Feel free to check [issues page](https://github.com/death7654/Chrultrabook-Tools/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc).
-You can also take a look at the [contributing guide](https://github.com/death7654/Chrultrabook-Tools/wiki/Contributing).
-If you have any features you would like to see look at [feature requests](https://github.com/death7654/Chrultrabook-Tools/discussions)
+[Issues page](https://github.com/death7654/Chrultrabook-Tools/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc)  
 
-## Show your support
+[Contributing guide](https://github.com/death7654/Chrultrabook-Tools/wiki/Contributing)
+
+[Feature requests](https://github.com/death7654/Chrultrabook-Tools/discussions)
+
+---
+
+## Show Your Support
 
 Give a ⭐️ if this project helped you!
 
+---
+
 ## 📝 License
 
-This project is [GPL-3.0](https://github.com/death7654/Chrultrabook-Tools/blob/3.X.X/LICENSE) licensed.
+This project is licensed under GPL-3.0:  
+https://github.com/death7654/Chrultrabook-Tools/blob/3.X.X/LICENSE
+
+---
 
 ## Disclaimer
 
-THE SOFTWARE IS PROVIDED “AS IS” AND WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. MISUSE OF THIS SOFTWARE COULD CAUSE SYSTEM INSTABILITY OR MALFUNCTION.
+THE SOFTWARE IS PROVIDED “AS IS” AND WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. MISUSE OF THIS SOFTWARE COULD CAUSE SYSTEM INSTABILITY OR MALFUNCTION.
