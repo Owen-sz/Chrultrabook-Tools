@@ -48,18 +48,12 @@ dnf install chrultrabook-tools
 1. download and save the repository signing key
 
     ```
-    wget -O /usr/share/keyrings/chrultrabook-debian-archive-keyring.gpg https://chrultrabook.sakamoto.pl/repos/debian/chrultrabook-debian-pub.asc
+    sudo wget https://chrultrabook.sakamoto.pl/repos/debian/chrultrabook-debian-pub.asc -O /etc/apt/trusted.gpg.d/chrultrabook-debian-archive-keyring.asc
     ```
 
-2. Create a sources files in sources.list.d
+2. Download the source file to sources.list.d
     ```
-    echo "
-    Types: deb
-    URIs: https://chrultrabook.sakamoto.pl/repos/debian/
-    Suites: stable
-    Components: main
-    Signed-By: /usr/share/keyrings/chrultrabook-debian-archive-keyring.gpg
-    " | sudo tee /etc/apt/sources.list.d/chrultrabook.sources > /dev/null
+    sudo wget https://chrultrabook.sakamoto.pl/repos/debian/chrultrabook.sources -O /etc/apt/sources.list.d/chrultrabook.sources
     ```
 
 3. Run
