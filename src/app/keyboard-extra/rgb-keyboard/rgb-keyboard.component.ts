@@ -159,6 +159,35 @@ export class RgbKeyboardComponent implements OnDestroy {
 
   constructor(private cdr: ChangeDetectorRef) {}
 
+  private loadProfileData(profileId: number): void {
+    const profile = this.customProfiles.find((p) => p.id === profileId);
+
+    if (profile) {
+      this.customCycleName = profile.name;
+
+      this.customColors = profile.steps.map((step: any, index: number) => ({
+        id: index,
+        hexCode: step.hex_code.startsWith("#")
+          ? step.hex_code.toUpperCase()
+          : `#${step.hex_code.toUpperCase()}`,
+        duration: step.duration_ms,
+      }));
+
+      this.nextCustomColorId =
+        this.customColors.length > 0
+          ? this.customColors[this.customColors.length - 1].id + 1
+          : 1;
+
+      console.log(`Loaded data for profile: ${profile.name}`);
+
+      this.startColorCycle();
+    } else {
+      console.error(
+        `Profile with ID ${profileId} not found in customProfiles.`
+      );
+    }
+  }
+
   ngOnInit() {
     this.loadCustomProfiles();
     this.rgbEnabled = false;
@@ -242,34 +271,6 @@ export class RgbKeyboardComponent implements OnDestroy {
     }
   }
 
-  private loadProfileData(profileId: number): void {
-    const profile = this.customProfiles.find((p) => p.id === profileId);
-
-    if (profile) {
-      this.customCycleName = profile.name;
-
-      this.customColors = profile.steps.map((step: any, index: number) => ({
-        id: index,
-        hexCode: step.hex_code.startsWith("#")
-          ? step.hex_code.toUpperCase()
-          : `#${step.hex_code.toUpperCase()}`,
-        duration: step.duration_ms,
-      }));
-
-      this.nextCustomColorId =
-        this.customColors.length > 0
-          ? this.customColors[this.customColors.length - 1].id + 1
-          : 1;
-
-      console.log(`Loaded data for profile: ${profile.name}`);
-
-      this.startColorCycle();
-    } else {
-      console.error(
-        `Profile with ID ${profileId} not found in customProfiles.`
-      );
-    }
-  }
 
   get rgbColor(): string {
     return `rgb(${Math.round(this.rgbRed)}, ${Math.round(

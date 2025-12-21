@@ -11,37 +11,12 @@ import { version } from "../../../package.json";
 export class SettingsComponent implements OnInit {
   version_applied: string = "";
   linux: boolean = true;
-  rgb_enabled: boolean = true;
+  //rgb_enabled: boolean = true;
 
   sensors: any;
   constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
-    invoke("execute", {
-      program: "ectool",
-      arguments: ["rgbkbd", "getconfig"],
-      reply: true,
-    }).then((event) => {
-      let output: any = event;
-      let split = output.split(" ")[0].toLowerCase();
-      if (split == "ec") {
-        this.rgb_enabled = true;
-      } else {
-        this.rgb_enabled = false;
-
-        invoke("local_storage", {
-          function: "get",
-          option: "rgb",
-          value: "",
-        }).then((app_boot) => {
-          if (app_boot == "true") {
-            this.options[3].answer = true;
-            this.cdr.detectChanges();
-          }
-        });
-      }
-      this.options[4].disabled = this.rgb_enabled;
-    });
     this.version_applied = version;
     invoke("os").then((os) => {
       if (typeof os == "string") {
@@ -95,6 +70,32 @@ export class SettingsComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
+
+    // invoke("execute", {
+    //   program: "ectool",
+    //   arguments: ["rgbkbd", "getconfig"],
+    //   reply: true,
+    // }).then((event) => {
+    //   let output: any = event;
+    //   let split = output.split(" ")[0].toLowerCase();
+    //   if (split == "ec") {
+    //     this.rgb_enabled = true;
+    //   } else {
+    //     this.rgb_enabled = false;
+
+    //     invoke("local_storage", {
+    //       function: "get",
+    //       option: "rgb",
+    //       value: "",
+    //     }).then((app_boot) => {
+    //       if (app_boot == "true") {
+    //         this.options[3].answer = true;
+    //         this.cdr.detectChanges();
+    //       }
+    //     });
+    //   }
+    //   this.options[4].disabled = this.rgb_enabled;
+    // });
 
     invoke("get_sensors").then((sensor_data) => {
       if (typeof sensor_data === "string") {
@@ -189,12 +190,12 @@ export class SettingsComponent implements OnInit {
       answer: false,
       disabled: false,
     },
-    {
-      id: 5,
-      function: "Start Custom Keyboard RGB Profile on Boot",
-      answer: false,
-      disabled: false,
-    },
+    // {
+    //   id: 5,
+    //   function: "Start Custom Keyboard RGB Profile on Boot",
+    //   answer: false,
+    //   disabled: false,
+    // },
   ];
   toggle(i: number) {
     if (this.options[i].answer) {
@@ -232,13 +233,13 @@ export class SettingsComponent implements OnInit {
         });
         invoke("autostart", { value: this.options[3].answer });
         break;
-      case 4:
-        invoke("local_storage", {
-          function: "save",
-          option: "rgb",
-          value: this.options[4].answer.toString(),
-        });
-        break;
+      // case 4:
+      //   invoke("local_storage", {
+      //     function: "save",
+      //     option: "rgb",
+      //     value: this.options[4].answer.toString(),
+      //   });
+      //   break;
     }
   }
   update_zoom(value: string) {
