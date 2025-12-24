@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: setup node
         uses: actions/setup-node@v4
         with:
@@ -61,7 +61,7 @@ jobs:
           - macos-15-intel
     runs-on: ${{ matrix.platform }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: setup node
         uses: actions/setup-node@v4
         with:
@@ -87,7 +87,7 @@ jobs:
         with:
           extra_nix_config: |
             extra-platforms = aarch64-linux
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Run nix flake check
         run: nix flake check --all-systems
   nix-build:
@@ -103,7 +103,7 @@ jobs:
             runner: ubuntu-24.04
     runs-on: ${{ matrix.runner }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: cachix/install-nix-action@v31
       - uses: cachix/cachix-action@v16
         with:
