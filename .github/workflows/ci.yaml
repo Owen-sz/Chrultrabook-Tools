@@ -83,10 +83,10 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: docker/setup-qemu-action@v3
-      - uses: DeterminateSystems/nix-installer-action@v19
+      - uses: cachix/install-nix-action@v31
         with:
-          extra-conf: |
-            extra-platforms = aarch64-linux x86_64-darwin
+          extra_nix_config: |
+            extra-platforms = aarch64-linux
       - uses: actions/checkout@v5
       - name: Run nix flake check
         run: nix flake check --all-systems
@@ -101,12 +101,10 @@ jobs:
             runner: ubuntu-24.04-arm
           - nix: x86_64-linux
             runner: ubuntu-24.04
-          - nix: x86_64-darwin
-            runner: macos-13
     runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v5
-      - uses: DeterminateSystems/nix-installer-action@v19
+      - uses: cachix/install-nix-action@v31
       - uses: cachix/cachix-action@v16
         with:
           name: death7654
