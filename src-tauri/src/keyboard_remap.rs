@@ -1,3 +1,7 @@
+#![allow(unused, unused_variables)]
+
+
+
 use std::fs::{self};
 use std::io;
 use std::mem;
