@@ -10,7 +10,7 @@ pub fn calculate_fan_percentage(temp: u16, array: Vec<u8>) -> u8 {
         index += 1.0;
         let temp2: u8 = array[index as usize];
 
-        if cpu_temp % 5 == 0 {
+        if cpu_temp.is_multiple_of(5) {
             fan_speed = temp1;
         } else {
             let calculate_fan_speed_between = (temp2 - temp1) as f32 * percentages + temp1 as f32;

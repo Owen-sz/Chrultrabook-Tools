@@ -13,7 +13,6 @@ mod save_to_local;
 mod temps;
 
 //external crates
-use std::error::Error;
 use std::fs;
 use tauri::image::Image;
 use tauri::menu::{IconMenuItemBuilder, MenuBuilder, MenuItemBuilder};
@@ -22,12 +21,6 @@ use tauri::{AppHandle, Emitter, EventTarget, Manager};
 use tauri_plugin_autostart::{MacosLauncher, ManagerExt};
 use tauri_plugin_clipboard_manager::ClipboardExt;
 use tauri_plugin_dialog::DialogExt;
-
-#[cfg(target_os = "linux")]
-use std::process::Command;
-
-#[cfg(target_os = "linux")]
-use std::os::unix::process::CommandExt;
 
 //open windows
 #[tauri::command]
@@ -317,8 +310,7 @@ async fn get_fan_json() -> String {
 
 #[tauri::command]
 async fn get_rgb_json() -> String {
-    let output = local_storage("get", "rgbprofiles", "");
-    return output;
+    local_storage("get", "rgbprofiles", "")
 }
 
 #[tauri::command]
@@ -374,15 +366,12 @@ fn get_remap_json(hard_reset: bool) -> String {
 
 #[tauri::command]
 fn set_remap(handle: tauri::AppHandle, params: String) -> bool {
-    let created_backup = local_storage("get", "keyboard_backup", " ");
-    if created_backup.len() == 0 {
+    let created_backup: String = local_storage("get", "keyboard_backup", " ");
+    if created_backup.is_empty() {
         let output = keyboard_remap::create_backup();
-        match output {
-            Err(e) => {
-                println!("Error: {}", e);
-                return false;
-            }
-            _ => {}
+        if let Err(e) = output {
+            println!("Error: {}", e);
+            return false;
         }
     }
 
@@ -418,11 +407,13 @@ fn set_remap(handle: tauri::AppHandle, params: String) -> bool {
             }
         });
 
-    return true;
+    true
 }
+
 #[tauri::command]
 fn reset_remap() -> bool {
-    return true;
+    // TODO: Not implemented? -9l
+    true
 }
 
 fn main() {

@@ -221,7 +221,7 @@ struct ConfigFileJson {
 // config generators
 
 pub fn generate_config_from_json(json_data: &str) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
-    let config_json: ConfigFileJson = serde_json::from_str(&json_data)?;
+    let config_json: ConfigFileJson = serde_json::from_str(json_data)?;
 
     println!(
         "Loaded {} configuration entries from JSON",
@@ -330,12 +330,11 @@ fn parse_key_state(state_str: &str) -> i32 {
 
 pub fn read_config(hard_reset: bool) -> String {
     // read file
-    let path: &str;
-    if !hard_reset {
-        path = CONFIG_PATH;
+    let path: &str = if !hard_reset {
+        CONFIG_PATH
     } else {
-        path = BACKUP_PATH;
-    }
+        BACKUP_PATH
+    };
     let data = match fs::read(path) {
         Ok(d) => d,
         Err(e) => {
@@ -557,12 +556,10 @@ pub fn read_config(hard_reset: bool) -> String {
     };
 
     match serde_json::to_string_pretty(&json_output) {
-        Ok(json_string) => {
-            return json_string;
-        }
+        Ok(json_string) => json_string,
         Err(e) => {
             println!("\nError serializing to JSON: {}", e);
-            return String::new();
+            String::new()
         }
     }
 }

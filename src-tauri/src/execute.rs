@@ -43,10 +43,7 @@ pub async fn execute(
                     return Ok(String::from_utf8(out.stdout)
                         .unwrap_or_else(|_| "execute_failure: invalid utf8".to_string()));
                 } else {
-                    return Err(format!(
-                        "{}",
-                        String::from_utf8(out.stderr).unwrap_or_else(|_| "N/A".to_string())
-                    ));
+                    return Err(String::from_utf8(out.stderr).unwrap_or_else(|_| "N/A".to_string()));
                 }
             }
             Err(e) => {
