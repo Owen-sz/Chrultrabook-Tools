@@ -15,7 +15,7 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "licenseFile": "./build/LICENSE",
+    "licenseFile": "../LICENSE",
     "license": "GPL-3.0",
     "linux": {
       "deb": {
@@ -24,8 +24,8 @@
         "files": {
           "/usr/bin/chrultrabook-tools-root": "./linux/chrultrabook-tools-root",
           "/usr/share/polkit-1/actions/com.chrultrabook.tools.policy": "./linux/com.chrultrabook.tools.policy",
-          "/usr/share/doc/chrultrabook-tools/README.md": "./build/README.md",
-          "/usr/share/licenses/chrultrabook-tools/LICENSE": "./build/LICENSE"
+          "/usr/share/doc/chrultrabook-tools/README.md": "../README.md",
+          "/usr/share/licenses/chrultrabook-tools/LICENSE": "../LICENSE"
         }
       },
       "rpm": {
@@ -34,8 +34,8 @@
         "files": {
           "/usr/bin/chrultrabook-tools-root": "./linux/chrultrabook-tools-root",
           "/usr/share/polkit-1/actions/com.chrultrabook.tools.policy": "./linux/com.chrultrabook.tools.policy",
-          "/usr/share/doc/chrultrabook-tools/README.md": "./build/README.md",
-          "/usr/share/licenses/chrultrabook-tools/LICENSE": "./build/LICENSE"
+          "/usr/share/doc/chrultrabook-tools/README.md": "../README.md",
+          "/usr/share/licenses/chrultrabook-tools/LICENSE": "../LICENSE"
         }
       }
     }
