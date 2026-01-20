@@ -75,7 +75,7 @@ sudo apt-get install cbmem chromium-ectool
 1. cd to the directory containing the .deb file  
 2. Run the following command with the correct version:
 ```
-sudo apt install ./chrultrabook-tools_3.1.2_amd64.deb
+sudo apt install ./chrultrabook-tools_3.1.3_amd64.deb
 ```
 ---
 
