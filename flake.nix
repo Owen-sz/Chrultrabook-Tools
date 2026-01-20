@@ -15,7 +15,6 @@
       forSystems = nixpkgs.lib.genAttrs [
         "x86_64-linux"
         "aarch64-linux"
-        "x86_64-darwin"
       ];
       overlays = [ (import rust-overlay) ];
     in
