@@ -1,14 +1,13 @@
 {
   lib,
-  system,
   stdenv,
   rustPlatform,
   importNpmLock,
   cargo-tauri,
-  nodejs_22,
+  nodejs,
   pkg-config,
   wrapGAppsHook4,
-  python311,
+  python3,
   at-spi2-atk,
   atkmm,
   cairo,
@@ -25,9 +24,9 @@
   webkitgtk_4_1,
   ...
 }:
-rustPlatform.buildRustPackage rec {
+rustPlatform.buildRustPackage (finalAttrs: {
   pname = "chrultrabook-tools";
-  version = (builtins.fromJSON (builtins.readFile (src + "/package-lock.json"))).version;
+  version = (builtins.fromJSON (builtins.readFile (finalAttrs.src + "/package-lock.json"))).version;
   src = ./.;
 
   cargoDeps = rustPlatform.importCargoLock {
@@ -38,13 +37,18 @@ rustPlatform.buildRustPackage rec {
     npmRoot = ./.;
   };
 
+  postPatch = ''
+    substituteInPlace $cargoDepsCopy/libappindicator-sys-*/src/lib.rs \
+      --replace-fail "libayatana-appindicator3.so.1" "${libayatana-appindicator}/lib/libayatana-appindicator3.so.1"
+  '';
+
   nativeBuildInputs = [
     cargo-tauri.hook
-    nodejs_22
+    nodejs
     importNpmLock.npmConfigHook
     pkg-config
     wrapGAppsHook4
-    python311
+    python3
   ];
 
   buildInputs = [
@@ -67,11 +71,8 @@ rustPlatform.buildRustPackage rec {
   ];
 
   cargoRoot = "src-tauri";
-  buildAndTestSubdir = cargoRoot;
-
-  postFixup = lib.optional stdenv.hostPlatform.isLinux ''
-    patchelf $out/bin/chrultrabook-tools --add-needed libayatana-appindicator3.so.1
-  '';
+  buildAndTestSubdir = finalAttrs.cargoRoot;
+  doCheck = false;
 
   meta = with lib; {
     description = "User-friendly configuration utility for Chromebooks running an alternate OS ";
@@ -82,4 +83,4 @@ rustPlatform.buildRustPackage rec {
       "aarch64-linux"
     ];
   };
-}
+})
