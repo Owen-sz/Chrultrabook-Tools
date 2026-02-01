@@ -93,7 +93,7 @@ jobs:
         run: nix flake check --all-systems
   nix-build:
     name: Nix Build
-    needs: nix-check
+    needs: [nix-check, cargo-tests]
     strategy:
       fail-fast: false
       matrix:
