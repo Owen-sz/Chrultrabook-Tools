@@ -13,7 +13,7 @@ env:
 jobs:
   cargo-tests:
     name: Cargo Tests
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -52,11 +52,12 @@ jobs:
         run: cargo test --manifest-path src-tauri/Cargo.toml --verbose --all-features
   build:
     name: Build
+    needs: cargo-tests
     strategy:
       fail-fast: false
       matrix:
         platform:
-          - ubuntu-22.04
+          - ubuntu-24.04
           - windows-2022
           - macos-15-intel
     runs-on: ${{ matrix.platform }}
@@ -70,7 +71,7 @@ jobs:
       - name: Install Rust Stable
         uses: dtolnay/rust-toolchain@stable
       - name: Install OS dependencies
-        if: matrix.platform == 'ubuntu-22.04'
+        if: matrix.platform == 'ubuntu-24.04'
         run: |
           sudo apt-get update
           sudo apt-get install -y ${{ env.ubuntu-deps }}
@@ -80,7 +81,7 @@ jobs:
         run: npm run tauri build
   nix-check:
     name: Nix Flake Checks
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: docker/setup-qemu-action@v3
       - uses: cachix/install-nix-action@v31
