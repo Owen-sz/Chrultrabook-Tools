@@ -4537,7 +4537,6 @@ dependencies = [
  "referencing",
  "regex",
  "regex-syntax",
- "reqwest 0.12.28",
  "serde",
  "serde_json",
  "uuid-simd",
@@ -8875,9 +8874,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-bundler"
-version = "2.7.5"
+version = "2.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d254c6ce04a1bed31e6a9558e64a507c7022220d0ea13511aa1e9319bc2cb76e"
+checksum = "d41776289930803eacbad1479245dc118a7f32a3f2e877bfa00e0b7c1c3b4c05"
 dependencies = [
  "anyhow",
  "ar",
@@ -8922,9 +8921,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-cli"
-version = "2.9.6"
+version = "2.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1dcae430b79ef659fad7f8b79b31c0683bfdf869b5dd1e37d29cc84c829304da"
+checksum = "23de4baf24f87e1e98a9c157516ea4e8965371f36880396b58ed97ffd75b4300"
 dependencies = [
  "ar",
  "axum",
@@ -8993,7 +8992,7 @@ dependencies = [
  "thiserror 2.0.17",
  "tokio",
  "toml 0.9.11+spec-1.1.0",
- "toml_edit 0.23.10+spec-1.0.0",
+ "toml_edit 0.24.0+spec-1.1.0",
  "ureq",
  "url",
  "uuid",
@@ -9042,19 +9041,20 @@ dependencies = [
 
 [[package]]
 name = "tauri-macos-sign"
-version = "2.3.2"
+version = "2.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7c9e638e4f3ab4f0827357db0b6bb9a0993955d0e3e9fceaf896f25a66aeb5cc"
+checksum = "3f96c9ec3386d9e9e72d0d4a1bae976e14c92245212689b0f19dd8fb98ac391b"
 dependencies = [
  "apple-codesign",
  "chrono",
  "dirs 6.0.0",
  "log",
- "once-cell-regex",
+ "once_cell",
  "os_pipe",
  "p12",
  "plist",
  "rand 0.9.2",
+ "regex",
  "serde",
  "serde_json",
  "tempfile",
@@ -9262,9 +9262,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-utils"
-version = "2.8.1"
+version = "2.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "76a423c51176eb3616ee9b516a9fa67fed5f0e78baaba680e44eb5dd2cc37490"
+checksum = "fcd169fccdff05eff2c1033210b9b94acd07a47e6fa9a3431cf09cfd4f01c87e"
 dependencies = [
  "aes-gcm",
  "anyhow",
@@ -9683,6 +9683,19 @@ name = "toml_edit"
 version = "0.23.10+spec-1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "84c8b9f757e028cee9fa244aea147aab2a9ec09d5325a9b01e0a49730c2b5269"
+dependencies = [
+ "indexmap 2.13.0",
+ "toml_datetime 0.7.5+spec-1.1.0",
+ "toml_parser",
+ "toml_writer",
+ "winnow 0.7.14",
+]
+
+[[package]]
+name = "toml_edit"
+version = "0.24.0+spec-1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8c740b185920170a6d9191122cafef7010bd6270a3824594bff6784c04d7f09e"
 dependencies = [
  "indexmap 2.13.0",
  "serde_core",
