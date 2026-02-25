@@ -19,7 +19,7 @@
     "license": "GPL-3.0",
     "linux": {
       "deb": {
-        "depends": ["chromium-ectool", "cbmem", "policykit-1"],
+        "depends": ["chromium-ectool", "cbmem"],
         "desktopTemplate": "./linux/chrultrabook-tools.desktop",
         "files": {
           "/usr/bin/chrultrabook-tools-root": "./linux/chrultrabook-tools-root",
