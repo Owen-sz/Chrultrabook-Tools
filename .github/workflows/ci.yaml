@@ -83,7 +83,7 @@ jobs:
     name: Nix Flake Checks
     runs-on: ubuntu-24.04
     steps:
-      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-qemu-action@v4
       - uses: cachix/install-nix-action@v31
         with:
           extra_nix_config: |
