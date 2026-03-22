@@ -48,6 +48,8 @@ Install Chrultrabook-Tools:
 ```
 dnf install chrultrabook-tools
 ```
+
+Reboot your chromebook
 ---
 
 ### Debian and Derivatives
@@ -77,6 +79,8 @@ sudo apt-get install cbmem chromium-ectool
 ```
 sudo apt install ./chrultrabook-tools_3.1.3_amd64.deb
 ```
+
+Reboot your chromebook
 ---
 
 ### Arch and Derivatives
@@ -92,6 +96,8 @@ pacman -U ~/Downloads/chrultrabook-tools-VERSION-pkg.tar.zst
 Replace VERSION with the latest version and adjust the file path if needed.
 
 ---
+
+After install reboot your chromebook 
 
 ### Build from Source
 ```
