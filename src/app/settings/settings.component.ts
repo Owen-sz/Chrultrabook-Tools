@@ -97,57 +97,51 @@ export class SettingsComponent implements OnInit {
     //   this.options[4].disabled = this.rgb_enabled;
     // });
 
-    invoke("get_sensors").then((sensor_data) => {
-      if (typeof sensor_data === "string") {
-        this.sensors = sensor_data.split("\n");
-      }
-      let sensors_html = '<div class="form-check">';
-      let sensor;
-      for (let i = 0; i < this.sensors.length - 1; i++) {
-        sensor =
-          '<label class="form-check-label fs-4" for="' +
-          this.sensors[i] +
-          '">' +
-          this.sensors[i] +
-          '</label><input class="form-check-input" type="checkbox" id="' +
-          this.sensors[i] +
-          '" value="" checked><br>';
-        sensors_html = sensors_html.concat(sensor);
-      }
-      sensors_html = sensors_html.concat("</div>");
+   invoke("get_sensors").then((sensor_data) => {
+  if (typeof sensor_data === "string") {
+    // Filter out empty lines to avoid ID errors
+    this.sensors = sensor_data.split("\n").filter(s => s.trim() !== "");
+  }
 
-      (document.getElementById("sensor_area") as HTMLElement).innerHTML =
-        sensors_html;
+  // 1. Build and Inject HTML
+  let sensors_html = '<div class="form-check">';
+  for (let i = 0; i < this.sensors.length; i++) {
+    sensors_html += `
+      <label class="form-check-label fs-4" for="${this.sensors[i]}">${this.sensors[i]}</label>
+      <input class="form-check-input" type="checkbox" id="${this.sensors[i]}" checked><br>
+    `;
+  }
+  sensors_html += "</div>";
+  (document.getElementById("sensor_area") as HTMLElement).innerHTML = sensors_html;
 
-      for (let i = 0; i < this.sensors.length - 1; i++) {
-        (
-          document.getElementById(this.sensors[i]) as HTMLInputElement
-        ).addEventListener("click", () => {
-          this.change_sensor();
-        });
-      }
-      this.cdr.detectChanges();
+  // 2. Add Event Listeners
+  for (let i = 0; i < this.sensors.length; i++) {
+    document.getElementById(this.sensors[i])?.addEventListener("click", () => {
+      this.change_sensor();
     });
+  }
 
-    invoke("local_storage", {
-      function: "get",
-      option: "sensor_selection",
-      value: "",
-    }).then((value) => {
-      let states;
-      if (typeof value === "string" && value == "") {
-        states = value.split(" ");
-      } else {
-        states = ["true", "true", "true"];
+  // 3. Now get the saved states (Nested so the IDs exist)
+  invoke("local_storage", {
+    function: "get",
+    option: "sensor_selection",
+    value: "",
+  }).then((value) => {
+    if (typeof value === "string" && value.trim() !== "") {
+      // Split and remove the empty entry caused by the trailing space
+      const states = value.trim().split(" ");
+      
+      for (let i = 0; i < this.sensors.length; i++) {
+        const input = document.getElementById(this.sensors[i]) as HTMLInputElement;
+        if (input) {
+          // Check if saved state is "true", otherwise default to true
+          input.checked = states[i] !== undefined ? states[i] === "true" : true;
+        }
       }
-
-      for (let i = 0; i < this.sensors.length - 1; i++) {
-        (document.getElementById(this.sensors[i]) as HTMLInputElement).checked =
-          /^true$/i.test(states[i]);
-      }
-
-      this.cdr.detectChanges();
-    });
+    }
+    this.cdr.detectChanges();
+  });
+});
     invoke("local_storage", {
       function: "get",
       option: "zoom",
@@ -254,7 +248,7 @@ export class SettingsComponent implements OnInit {
 
   change_sensor() {
     let sensor_state = "";
-    for (let i = 0; i < this.sensors.length - 1; i++) {
+    for (let i = 0; i < this.sensors.length; i++) {
       let checked = (
         document.getElementById(this.sensors[i]) as HTMLInputElement
       ).checked;
