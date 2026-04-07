@@ -59,7 +59,7 @@ export class KeyboardRemapComponent {
   editingCell: { rowIndex: number; field: string } | null = null;
 
   // Valid options from Rust code
-  keyStateOptions = ['Select', "NoDetect", "Enforce", "EnforceNot"];
+  keyStateOptions = ["NoDetect", "Enforce", "EnforceNot"];
   modifierFields = [
     "left_ctrl",
     "left_alt",
@@ -171,7 +171,7 @@ updateConfigField(rowIndex: number, field: string, value: any): void {
   }
 
   getCellClass(value: any): any {
-    if (value === "NoDetect" || value === 'Select') return "text-white";
+    if (value === "NoDetect") return "text-white";
     if (value === "Enforce") return "text-success fw-semibold";
     if (value === "EnforceNot") return "text-danger fw-semibold";
     return "text-white fw-bold";
