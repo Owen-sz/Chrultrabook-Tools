@@ -118,17 +118,20 @@ export class KeyboardRemapComponent {
     );
   }
 
-  updateConfigField(rowIndex: number, field: string, value: string): void {
-    if (rowIndex < this.current_remap.length) {
-      if (field === "remap_vivaldi_to_fn") {
-        this.current_remap[rowIndex][field] = (value === "true" || value === true);
-      } else {
-        (this.current_remap[rowIndex] as any)[field] = value;
-      }
-      this.editingCell = null;
-      this.cdr.detectChanges();
+updateConfigField(rowIndex: number, field: string, value: any): void {
+  if (rowIndex < this.current_remap.length) {
+    const record = this.current_remap[rowIndex];
+
+    if (field === "remap_vivaldi_to_fn") {
+      record.remap_vivaldi_to_fn = String(value) === 'true';
+    } else {
+      (record as any)[field] = String(value);
     }
+
+    this.editingCell = null;
+    this.cdr.detectChanges();
   }
+}
 
   resetToCurrentConfig(): void {
     if (confirm("Reset all keys to previous save state?")) {
