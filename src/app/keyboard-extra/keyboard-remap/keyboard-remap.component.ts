@@ -121,7 +121,7 @@ export class KeyboardRemapComponent {
   updateConfigField(rowIndex: number, field: string, value: string): void {
     if (rowIndex < this.current_remap.length) {
       if (field === "remap_vivaldi_to_fn") {
-        this.current_remap[rowIndex][field] = value === "true";
+        this.current_remap[rowIndex][field] = (value === "true" || value === true);
       } else {
         (this.current_remap[rowIndex] as any)[field] = value;
       }
